@@ -19,9 +19,9 @@ public class RatesController : ControllerBase
         return Ok("please order a currency");
     }
 
-    [HttpGet("{currency1}/{currency2}")]
+    [HttpGet("get")]
     
-    public async Task<IActionResult> greet(string currency1, string currency2)
+    public async Task<IActionResult> getRate(string main, string target)
     {
         using HttpClient client = new HttpClient();
         try
@@ -31,12 +31,23 @@ public class RatesController : ControllerBase
             {
                 return BadRequest("API key not found");
             }
-            string url = $"https://api.exchangeratesapi.io/latest?base={currency1}?api_key={api_key}";
-            HttpResponseMessage response = await client.GetAsync(url);
+            if (!Constants.availableCurrencies.Contains(main))
+            {
+                return BadRequest("Main currency not found");
+            }
+            if (!Constants.availableCurrencies.Contains(target))
+            {
+                return BadRequest("Target currency not found");
+            }
+            Console.WriteLine($"main: {main}, target: {target}, api_key: {api_key}");
+            string url = $"https://api.exchangeratesapi.io/latest?base={main}&access_key={api_key}";
+            HttpResponseMessage response = await client.GetAsync(url); 
             string responseBody = await response.Content.ReadAsStringAsync();
-            return Ok("SUCCESS");
-
-
+            // if (response.success == false)
+            // {
+            //     return BadRequest("API call failed", response.error);
+            // }
+            return Ok(responseBody);
         }
         catch (HttpRequestException e)
         {
