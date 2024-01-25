@@ -1,10 +1,32 @@
 
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+public record struct IResponseBody
+{
+    public struct Meta
+    {
+        public int Code;
+        public string? disclaimer;
+        public string? error_type;
+        public string? error_detail;
+    }
+
+    public struct Response
+    {
+        public string date;
+        [JsonPropertyName("base")]
+        public Dictionary<string, decimal> Rates;
+    }
+
+    public Meta meta;
+    public Response response;
+}
 public class RatesService
 {
-    private readonly string _sampleJsonFilePath = "../../mock.json"; // TODO delete this
+    private readonly string _sampleJsonFilePath = "mock.json"; // TODO delete this
     public async Task<decimal> GetCurrentRate(string main, string target)
     {
         using HttpClient client = new();
@@ -21,32 +43,28 @@ public class RatesService
         {
             throw new Exception("Target currency not found");
         }
-        using StreamReader reader = new(_sampleJsonFilePath); // TODO delete this
-        var json = reader.ReadToEnd(); // TODO delete this
-        var jarray = JArray.Parse(json); // TODO delete this
-        // Console.WriteLine($"main: {main}, target: {target}, api_key: {api_key}");
-        // string url = $"https://api.exchangeratesapi.io/latest?base={main}&access_key={api_key}";
+        // string url = $"https://api.currencybeacon.com/v1/latest?api_key={api_key}&base={main}";
         // HttpResponseMessage response = await client.GetAsync(url);
-        // string responseBody = await response.Content.ReadAsStringAsync();
-        // if (response.success == false)
+        // if (response.IsSuccessStatusCode)
         // {
-        //     return BadRequest("API call failed", response.error);
+        //     string responseBody = await response.Content.ReadAsStringAsync();
+        //     JObject json = JObject.Parse(responseBody);
+        //     decimal rates = (decimal)json["rates"][target];
+        //     return rate;
         // }
-        var result = JObject.Parse(responseBody);
-
-
-        // check if result.success is false
-        Console.WriteLine(result["success"]);
-        // if (result.Value<bool>("success") == false)
+        // else
         // {
         //     throw new Exception("API call failed");
         // }
-        Console.WriteLine(result);
-        // var rate = result["rates"];
-        // if (rate == null)
-        // {
-        //     throw new Exception("Currency rate not found");
-        // }
-        return result.Value<decimal>("rate");
+        var incoming = new IResponseBody();
+        using StreamReader r = new(_sampleJsonFilePath);
+        string json = await r.ReadToEndAsync();
+        incoming = JsonConvert.DeserializeObject<IResponseBody>(json);
+        if (incoming.response.Rates.Count == 0)
+        {
+            throw new Exception("No rates found");
+        }
+        decimal rate = incoming.response.Rates[target.ToUpper()];
+        return rate;
     }
 }

@@ -456,3 +456,4 @@ $RECYCLE.BIN/
 .vscode/tasks.json
 mock.json
 .env
+.editorconfig
