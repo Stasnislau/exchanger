@@ -34,3 +34,31 @@ class CustomNotFound : CustomException
     }
 }
 
+class CustomMethodNotAllowed : CustomException
+{
+    public CustomMethodNotAllowed(string message = "Method not allowed") : base(message, 405)
+    {
+    }
+}
+
+class CustomNotAcceptable : CustomException
+{
+    public CustomNotAcceptable(string message = "Not acceptable") : base(message, 406)
+    {
+    }
+}
+
+class CustomRequestTimeout : CustomException
+{
+    public CustomRequestTimeout(string message = "Request timeout") : base(message, 408)
+    {
+    }
+}
+
+class CustomInternalServerError : CustomException
+{
+    public CustomInternalServerError(string message = "Internal server error") : base(message, 500)
+    {
+    }
+}
+
