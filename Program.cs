@@ -9,5 +9,6 @@ DotNetEnv.Env.Load();
 app.MapGet("/", () => "Hello World!");
 
 app.MapControllers();
+app.UseMiddleware<ExceptionMiddleware>();
 app.Run();
 

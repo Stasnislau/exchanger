@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using Microsoft.AspNetCore.Http.HttpResults;
 public record struct IResponseBody
 {
     public struct Meta
@@ -33,15 +33,15 @@ public class RatesService
         string? api_key = Environment.GetEnvironmentVariable("CURRENCY_BEACON_API_KEY") ?? throw new Exception("API key not found");
         if (api_key == null)
         {
-            throw new Exception("API key not found");
+            throw new CustomBadRequest("API key not found");
         }
         if (!Constants.availableCurrencies.Contains(main))
         {
-            throw new Exception("Main currency not found");
+            throw new CustomBadRequest("Main currency not found");
         }
         if (!Constants.availableCurrencies.Contains(target))
         {
-            throw new Exception("Target currency not found");
+            throw new CustomBadRequest("Target currency not found");
         }
         // string url = $"https://api.currencybeacon.com/v1/latest?api_key={api_key}&base={main}";
         // HttpResponseMessage response = await client.GetAsync(url);
