@@ -24,10 +24,19 @@ public record struct IResponseBody
     public Meta meta;
     public Response response;
 }
+
+public struct RatesResponse
+{
+    public string mainCurrency;
+    public string targetCurrency;
+    public decimal rate;
+    public string date;
+
+}
 public class RatesService
 {
     private readonly string _sampleJsonFilePath = "mock.json"; // TODO delete this
-    public async Task<decimal> GetCurrentRate(string main, string target)
+    public async Task<RatesResponse> GetCurrentRate(string main, string target)
     {
         using HttpClient client = new();
         string? api_key = Environment.GetEnvironmentVariable("CURRENCY_BEACON_API_KEY") ?? throw new Exception("API key not found");
@@ -65,6 +74,14 @@ public class RatesService
             throw new Exception("No rates found");
         }
         decimal rate = incoming.response.Rates[target.ToUpper()];
-        return rate;
+        string  date = incoming.response.date;
+        return new RatesResponse
+        {
+            mainCurrency = main,
+            targetCurrency = target,
+            rate = rate,
+            date = date
+        };
+        
     }
 }
