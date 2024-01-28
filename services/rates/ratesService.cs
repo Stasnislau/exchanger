@@ -1,9 +1,6 @@
 
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Http.HttpResults;
 public record struct IResponseBody
 {
     public struct Meta
@@ -35,7 +32,6 @@ public struct RatesResponse
 }
 public class RatesService
 {
-    private readonly string _sampleJsonFilePath = "mock.json"; // TODO delete this
     public async Task<RatesResponse> GetCurrentRate(string main, string target)
     {
         using HttpClient client = new();
