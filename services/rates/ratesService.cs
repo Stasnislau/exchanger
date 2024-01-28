@@ -52,29 +52,16 @@ public class RatesService
         {
             throw new CustomBadRequest("Target currency not found");
         }
-        // string url = $"https://api.currencybeacon.com/v1/latest?api_key={api_key}&base={main}";
-        // HttpResponseMessage response = await client.GetAsync(url);
-        // if (response.IsSuccessStatusCode)
-        // {
-        //     string responseBody = await response.Content.ReadAsStringAsync();
-        //     JObject json = JObject.Parse(responseBody);
-        //     decimal rates = (decimal)json["rates"][target];
-        //     return rate;
-        // }
-        // else
-        // {
-        //     throw new Exception("API call failed");
-        // }
+        string url = $"https://api.currencybeacon.com/v1/latest?api_key={api_key}&base={main}";
+        HttpResponseMessage response = await client.GetAsync(url);
         var incoming = new IResponseBody();
-        using StreamReader r = new(_sampleJsonFilePath);
-        string json = await r.ReadToEndAsync();
-        incoming = JsonConvert.DeserializeObject<IResponseBody>(json);
+        incoming = JsonConvert.DeserializeObject<IResponseBody>(response.Content.ReadAsStringAsync().Result);
         if (incoming.response.Rates.Count == 0)
         {
             throw new Exception("No rates found");
         }
         decimal rate = incoming.response.Rates[target.ToUpper()];
-        string  date = incoming.response.date;
+        string date = incoming.response.date;
         return new RatesResponse
         {
             mainCurrency = main,
@@ -82,6 +69,6 @@ public class RatesService
             rate = rate,
             date = date
         };
-        
+
     }
 }
