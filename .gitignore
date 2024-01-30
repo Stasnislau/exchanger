@@ -458,3 +458,4 @@ mock.json
 .env
 .editorconfig
 client/package-lock.json
+Migrations

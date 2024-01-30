@@ -11,23 +11,23 @@ public class AuthorizationController
         _AuthorizationService = authorizationService;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(string username, string password, string email)
-    {
-        try
-        {
-            var response = await _AuthorizationService.Login(username, password);
-            string jsonString = JsonConvert.SerializeObject(response);
-            return new ContentResult
-            {
-                Content = jsonString,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
+    // [HttpPost("login")]
+    // public async Task<IActionResult> Login(string username, string password, string email)
+    // {
+    //     try
+    //     {
+            // var response = await _AuthorizationService.Login(username, password);
+            // string jsonString = JsonConvert.SerializeObject(response);
+            // return new ContentResult
+            // {
+            //     Content = jsonString,
+            //     ContentType = "application/json",
+            //     StatusCode = 200
+            // };
+    //     }
+    //     catch (Exception)
+    //     {
+    //         throw;
+    //     }
+    // }
 }
