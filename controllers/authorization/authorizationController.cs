@@ -1,29 +1,22 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-[Authorize]
+
 [ApiController]
 [Route("api/[controller]")]
-
-
-public class RatesController(RatesService ratesService) : ControllerBase
+public class AuthorizationController
 {
-    private readonly RatesService _ratesService = ratesService;
-
-    [HttpGet]
-    public IActionResult Get()
+    private readonly AuthorizationService _AuthorizationService;
+    public AuthorizationController(AuthorizationService authorizationService)
     {
-        return Ok("please order a currency");
+        _AuthorizationService = authorizationService;
     }
 
-    [HttpGet("get")]
-
-    public async Task<IActionResult> GetRate(string main, string target)
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(string username, string password, string email)
     {
         try
         {
-            var response = await _ratesService.GetCurrentRate(main, target);
-
+            var response = await _AuthorizationService.Login(username, password);
             string jsonString = JsonConvert.SerializeObject(response);
             return new ContentResult
             {
