@@ -1,7 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using database;
 using Microsoft.IdentityModel.Tokens;
+using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
 
 public class LoginResponseDTO
 {
@@ -12,6 +15,13 @@ public class LoginResponseDTO
 
 public class AuthorizationService
 {
+
+    private readonly ApplicationDbContext _context;
+
+    public AuthorizationService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
     private string GenerateJWToken(string username, string userID, string secret)
     {
         var claims = new List<Claim>
@@ -34,16 +44,65 @@ public class AuthorizationService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    // public async Task<LoginResponseDTO> Login(string username, string password)
-    // {
-        // check the credentials in the database
+    public async Task<bool> Register (string username, string password, string email)
+    {
+        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+        var user = new User
+        {
+            Username = username,
+            PasswordHash = hashedPassword,
+            Email = email
+        };
 
-        // var token = GenerateJWToken(user.Username, user.Id.ToString(), Environment.GetEnvironmentVariable("SECRET_KEY") ?? throw new InvalidOperationException("No secret key found"));
+        await _context.Users.AddAsync(user);
+        int result = await _context.SaveChangesAsync();
 
-        // return new LoginResponseDTO
-        // {
-        //     Token = token
-        // };
-    // }
+        if (result == 0)
+        {
+            throw new Exception("Could not save user");
+        }
+
+        return true;
+    }
+
+    public async Task<LoginResponseDTO> Login(string username, string password)
+    {
+        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+        var user = await _context.Users.Where(x => x.Username == username && x.PasswordHash == hashedPassword).FirstOrDefaultAsync();
+        if (user == null)
+        {
+            throw new Exception("Invalid credentials");
+        }
+
+
+        var token = GenerateJWToken(username, user.Id.ToString(), Environment.GetEnvironmentVariable("SECRET_KEY") ?? throw new InvalidOperationException("No secret key found"));
+        var refreshToken = GenerateJWToken(username, user.Id.ToString(), Environment.GetEnvironmentVariable("REFRESH_SECRET_KEY") ?? throw new InvalidOperationException("No refresh secret key found"));
+
+        var refreshTokenEntity = new RefreshToken
+        {
+            Token = refreshToken,
+            UserId = user.Id,
+            ExpiresAt = DateTime.Now.AddDays(14),
+            CreatedAt = DateTime.Now
+        };
+
+        await _context.RefreshTokens.AddAsync(refreshTokenEntity);
+
+
+        int result = await _context.SaveChangesAsync();
+
+        if (result == 0)
+        {
+            throw new Exception("Could not save refresh token");
+        }
+
+        return new LoginResponseDTO
+        {
+            token = token,
+            refreshToken = refreshToken
+        };
+    }
+
+
 
 };

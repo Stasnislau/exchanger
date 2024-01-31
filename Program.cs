@@ -16,7 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL") ?? throw new InvalidOperationException("No database url found")),
         b => b.MigrationsAssembly("exchanger")
-    );
+    ); 
 });
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(x =>
