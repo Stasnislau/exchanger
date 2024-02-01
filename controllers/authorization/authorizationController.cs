@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -12,7 +13,7 @@ public class AuthorizationController
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(string username, string password, string email)
+    public async Task<IActionResult> Login(string username, string password)
     {
         try
         {

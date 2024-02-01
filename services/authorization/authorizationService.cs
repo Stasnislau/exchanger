@@ -3,13 +3,12 @@ using System.Security.Claims;
 using System.Text;
 using database;
 using Microsoft.IdentityModel.Tokens;
-using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 
 public class LoginResponseDTO
 {
-    public string token { get; set; }
-    public string refreshToken { get; set; }
+    public string? token { get; set; }
+    public string? refreshToken { get; set; }
 
 }
 
@@ -44,7 +43,7 @@ public class AuthorizationService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<bool> Register (string username, string password, string email)
+    public async Task<bool> Register(string username, string password, string email)
     {
         string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
         var user = new User
@@ -59,7 +58,7 @@ public class AuthorizationService
 
         if (result == 0)
         {
-            throw new Exception("Could not save user");
+            throw new CustomException("Could not save user", 500);
         }
 
         return true;
@@ -67,11 +66,15 @@ public class AuthorizationService
 
     public async Task<LoginResponseDTO> Login(string username, string password)
     {
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        {
+            throw new CustomBadRequest("Invalid credentials");
+        }
         string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
         var user = await _context.Users.Where(x => x.Username == username && x.PasswordHash == hashedPassword).FirstOrDefaultAsync();
         if (user == null)
         {
-            throw new Exception("Invalid credentials");
+            throw new CustomBadRequest("Invalid credentials");
         }
 
 
@@ -93,7 +96,7 @@ public class AuthorizationService
 
         if (result == 0)
         {
-            throw new Exception("Could not save refresh token");
+            throw new CustomBadRequest("Could not save refresh token");
         }
 
         return new LoginResponseDTO
