@@ -25,16 +25,19 @@ public class ExceptionMiddleware
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
+
         var errorResponse = new ErrorResponse
         {
-            StatusCode = (int)HttpStatusCode.InternalServerError,
+            Success = false,
             Message = "Internal Server Error"
         };
+        int statusCode = (int)HttpStatusCode.InternalServerError;
         if (exception is CustomException)
         {
             errorResponse.Message = exception.Message;
-            errorResponse.StatusCode = (int)((CustomException)exception).StatusCode;
+            statusCode = (exception as CustomException).StatusCode;
         }
+        context.Response.StatusCode = statusCode;
         var jsonError = JsonConvert.SerializeObject(errorResponse);
         await context.Response.WriteAsync(jsonError);
     }
@@ -42,6 +45,6 @@ public class ExceptionMiddleware
 
 public class ErrorResponse
 {
-    public int StatusCode { get; set; }
-    public string Message { get; set; }
+    public bool Success { get; set; }
+    public string? Message { get; set; }
 }
