@@ -13,12 +13,8 @@ builder.Services.AddScoped<AuthorizationService>();
 DotNetEnv.Env.Load();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL") ?? throw new InvalidOperationException("No database url found")),
-        b => b.MigrationsAssembly("exchanger")
-    );
-});
+    options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"))
+);
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
