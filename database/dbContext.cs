@@ -29,13 +29,13 @@ namespace database
 
             modelBuilder.Entity<User>().Property(u => u.favorite_currency).HasDefaultValue("usd");
 
-            modelBuilder.Entity<User>().Property(u => u.CreatedAt).HasDefaultValueSql("now()");
+            modelBuilder.Entity<User>().Property(u => u.CreatedAt).HasDefaultValueSql("now() at time zone 'utc'");
             modelBuilder.Entity<User>().Property(u => u.PasswordHash).IsRequired();
             modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
 
 
-            modelBuilder.Entity<Rate>().Property(r => r.CreatedAt).HasDefaultValueSql("now()");
+            modelBuilder.Entity<Rate>().Property(r => r.CreatedAt).HasDefaultValueSql("now() at time zone 'utc'");
 
 
 

@@ -31,7 +31,6 @@ public class AuthorizationService
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-
         var token = new JwtSecurityToken(
             issuer: "*",
             audience: "*",
@@ -39,13 +38,17 @@ public class AuthorizationService
             expires: DateTime.Now.AddMinutes(30),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
         );
-
         return new JwtSecurityTokenHandler().WriteToken(token);
+
     }
 
     public async Task<bool> Register(string username, string password, string email)
     {
         string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+        if (_context.Users.Where(x => x.Username == username || x.Email == email).FirstOrDefault() != null)
+        {
+            throw new CustomBadRequest("User already exists");
+        }
         var user = new User
         {
             Username = username,
@@ -70,14 +73,15 @@ public class AuthorizationService
         {
             throw new CustomBadRequest("Invalid credentials");
         }
-        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-        var user = await _context.Users.Where(x => x.Username == username && x.PasswordHash == hashedPassword).FirstOrDefaultAsync();
+        var user = await _context.Users.Where(x => x.Username == username).FirstOrDefaultAsync();
         if (user == null)
         {
             throw new CustomBadRequest("Invalid credentials");
         }
-
-
+        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+        {
+            throw new CustomBadRequest("Invalid credentials");
+        }
         var token = GenerateJWToken(username, user.Id.ToString(), Environment.GetEnvironmentVariable("SECRET_KEY") ?? throw new InvalidOperationException("No secret key found"));
         var refreshToken = GenerateJWToken(username, user.Id.ToString(), Environment.GetEnvironmentVariable("REFRESH_SECRET_KEY") ?? throw new InvalidOperationException("No refresh secret key found"));
 
@@ -85,8 +89,8 @@ public class AuthorizationService
         {
             Token = refreshToken,
             UserId = user.Id,
-            ExpiresAt = DateTime.Now.AddDays(14),
-            CreatedAt = DateTime.Now
+            ExpiresAt = DateTime.Now.ToUniversalTime().AddDays(14),
+            CreatedAt = DateTime.Now.ToUniversalTime()
         };
 
         await _context.RefreshTokens.AddAsync(refreshTokenEntity);
