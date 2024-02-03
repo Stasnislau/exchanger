@@ -36,9 +36,6 @@ namespace database
 
 
             modelBuilder.Entity<Rate>().Property(r => r.CreatedAt).HasDefaultValueSql("now() at time zone 'utc'");
-
-
-
         }
     }
 }

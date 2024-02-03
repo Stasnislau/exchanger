@@ -62,4 +62,22 @@ public class AuthorizationController
             throw;
         }
     }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(string username, string password, string email)
+    {
+        try
+        {
+            return new ContentResult
+            {
+                Content = "Not implemented yet",
+                ContentType = "application/json",
+                StatusCode = 200
+            };
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }
