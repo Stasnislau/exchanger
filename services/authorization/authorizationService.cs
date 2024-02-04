@@ -35,7 +35,7 @@ public class AuthorizationService
             issuer: "*",
             audience: "*",
             claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.UtcNow.AddMinutes(30),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
         );
         return new JwtSecurityTokenHandler().WriteToken(token);
@@ -84,7 +84,6 @@ public class AuthorizationService
         }
         var token = GenerateJWToken(username, user.Id.ToString(), Environment.GetEnvironmentVariable("SECRET_KEY") ?? throw new InvalidOperationException("No secret key found"));
         var refreshToken = GenerateJWToken(username, user.Id.ToString(), Environment.GetEnvironmentVariable("REFRESH_SECRET_KEY") ?? throw new InvalidOperationException("No refresh secret key found"));
-
         var refreshTokenEntity = new RefreshToken
         {
             Token = refreshToken,
@@ -92,12 +91,20 @@ public class AuthorizationService
             ExpiresAt = DateTime.Now.ToUniversalTime().AddDays(14),
             CreatedAt = DateTime.Now.ToUniversalTime()
         };
-
-        await _context.RefreshTokens.AddAsync(refreshTokenEntity);
-
+        var existingRefreshToken = await _context.RefreshTokens.Where(x => x.UserId == user.Id).FirstOrDefaultAsync();
+        if (existingRefreshToken != null)
+        {
+            user.RefreshToken.Token = refreshToken;
+            user.RefreshToken.ExpiresAt = refreshTokenEntity.ExpiresAt;
+            user.RefreshToken.CreatedAt = refreshTokenEntity.CreatedAt;
+            _context.RefreshTokens.Update(user.RefreshToken);
+        }
+        else
+        {
+            await _context.RefreshTokens.AddAsync(refreshTokenEntity);
+        }
 
         int result = await _context.SaveChangesAsync();
-
         if (result == 0)
         {
             throw new CustomBadRequest("Could not save refresh token");
