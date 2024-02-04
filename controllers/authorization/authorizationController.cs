@@ -93,4 +93,25 @@ public class AuthorizationController
             throw;
         }
     }
+
+    [HttpPost("refresh")]
+    [Authorize]
+    public async Task<IActionResult> Refresh(string refreshToken)
+    {
+        try
+        {
+            var response = await _AuthorizationService.Refresh(refreshToken);
+            string jsonString = JsonConvert.SerializeObject(response);
+            return new ContentResult
+            {
+                Content = jsonString,
+                ContentType = "application/json",
+                StatusCode = 200
+            };
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

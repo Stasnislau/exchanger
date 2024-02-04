@@ -137,4 +137,49 @@ public class AuthorizationService
         return true;
     }
 
+    public async Task<LoginResponseDTO> Refresh(string refreshToken)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(refreshToken) as JwtSecurityToken;
+        int userId = int.Parse(jsonToken.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+        var user = await _context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+        if (user == null)
+        {
+            throw new CustomBadRequest("Invalid refresh token");
+        }
+        var token = GenerateJWToken(user.Username, user.Id.ToString(), Environment.GetEnvironmentVariable("SECRET_KEY") ?? throw new InvalidOperationException("No secret key found"));
+        var newRefreshToken = GenerateJWToken(user.Username, user.Id.ToString(), Environment.GetEnvironmentVariable("REFRESH_SECRET_KEY") ?? throw new InvalidOperationException("No refresh secret key found"));
+        var refreshTokenEntity = new RefreshToken
+        {
+            Token = newRefreshToken,
+            UserId = user.Id,
+            ExpiresAt = DateTime.Now.ToUniversalTime().AddDays(14),
+            CreatedAt = DateTime.Now.ToUniversalTime()
+        };
+        var existingRefreshToken = await _context.RefreshTokens.Where(x => x.UserId == user.Id).FirstOrDefaultAsync();
+        if (existingRefreshToken != null)
+        {
+            user.RefreshToken.Token = newRefreshToken;
+            user.RefreshToken.ExpiresAt = refreshTokenEntity.ExpiresAt;
+            user.RefreshToken.CreatedAt = refreshTokenEntity.CreatedAt;
+            _context.RefreshTokens.Update(user.RefreshToken);
+        }
+        else
+        {
+            await _context.RefreshTokens.AddAsync(refreshTokenEntity);
+        }
+
+        int result = await _context.SaveChangesAsync();
+        if (result == 0)
+        {
+            throw new CustomBadRequest("Could not save refresh token");
+        }
+
+        return new LoginResponseDTO
+        {
+            token = token,
+            refreshToken = newRefreshToken
+        };
+    }
+
 };
