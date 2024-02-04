@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<RatesService>();
 builder.Services.AddScoped<AuthorizationService>();
+builder.Services.AddHttpContextAccessor();
 
 DotNetEnv.Env.Load();
 

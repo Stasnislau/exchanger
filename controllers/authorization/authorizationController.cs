@@ -69,9 +69,21 @@ public class AuthorizationController
     {
         try
         {
+            bool response = await _AuthorizationService.Logout();
+            string jsonString = JsonConvert.SerializeObject(response ?
+                new
+                {
+                    message = "User logged out",
+                    success = true
+                } :
+                new
+                {
+                    message = "User not logged out",
+                    success = false
+                });
             return new ContentResult
             {
-                Content = "Not implemented yet",
+                Content = jsonString,
                 ContentType = "application/json",
                 StatusCode = 200
             };

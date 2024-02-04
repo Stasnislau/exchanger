@@ -16,10 +16,13 @@ public class AuthorizationService
 {
 
     private readonly ApplicationDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public AuthorizationService(ApplicationDbContext context)
+    public AuthorizationService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
+        _httpContextAccessor = httpContextAccessor;
+
     }
     private string GenerateJWToken(string username, string userID, string secret)
     {
@@ -117,6 +120,21 @@ public class AuthorizationService
         };
     }
 
-
+    public async Task<bool> Logout()
+    {
+        var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var refreshToken = await _context.RefreshTokens.Where(x => x.UserId.ToString() == userId).FirstOrDefaultAsync();
+        if (refreshToken == null)
+        {
+            throw new CustomBadRequest("User is not logged in");
+        }
+        _context.RefreshTokens.Remove(refreshToken);
+        int result = await _context.SaveChangesAsync();
+        if (result == 0)
+        {
+            throw new CustomException("Could not remove refresh token", 500);
+        }
+        return true;
+    }
 
 };
