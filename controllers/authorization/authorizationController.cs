@@ -64,7 +64,8 @@ public class AuthorizationController
     }
 
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout(string username, string password, string email)
+    [Authorize]
+    public async Task<IActionResult> Logout()
     {
         try
         {

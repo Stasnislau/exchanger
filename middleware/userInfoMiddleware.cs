@@ -1,3 +1,7 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using database;
+
 public class UserInfoMiddleware
 {
     private readonly RequestDelegate _next;
@@ -9,14 +13,16 @@ public class UserInfoMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        var user = context.User;
-        if (user.Identity.IsAuthenticated)
+
+        var header = context.Request.Headers.ContainsKey("Authorization") ? context.Request.Headers["Authorization"].ToString() : null;
+        if (header != null)
         {
-            var username = user.Identity.Name;
-            var email = user.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
-            Console.WriteLine(user.Claims);
-            context.Items["username"] = username;
-            context.Items["email"] = email;
+            var token = header.Split(" ")[1];
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+            int userId = int.Parse(jsonToken.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+            var user = context.User;
+            user.AddIdentity(new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) }));
         }
         await _next(context);
     }

@@ -39,14 +39,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.UseMiddleware<UserInfoMiddleware>();
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();
 
