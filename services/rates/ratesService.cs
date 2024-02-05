@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using database;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 public record struct IResponseBody
 {
@@ -97,5 +98,11 @@ public class RatesService
             throw new CustomBadRequest("Could not save rate");
         }
         return true;
+    }   
+
+    public async Task<List<Rate>> GetHistory()
+    {
+        var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        return await _context.Rates.Where(x => x.UserId == int.Parse(userId)).ToListAsync();
     }
 }

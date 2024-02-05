@@ -69,4 +69,25 @@ public class RatesController(RatesService ratesService) : ControllerBase
             throw;
         }
     }
+
+    [HttpGet("history")]
+    [Authorize]
+    public async Task<IActionResult> GetHistory()
+    {
+        try
+        {
+            var response = await _ratesService.GetHistory();
+            string jsonString = JsonConvert.SerializeObject(response);
+            return new ContentResult
+            {
+                Content = jsonString,
+                ContentType = "application/json",
+                StatusCode = 200
+            };
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }
