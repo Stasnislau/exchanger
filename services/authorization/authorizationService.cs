@@ -22,7 +22,6 @@ public class AuthorizationService
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
-
     }
     private string GenerateJWToken(string username, string userID, string secret)
     {
@@ -38,7 +37,7 @@ public class AuthorizationService
             issuer: "*",
             audience: "*",
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(30),
+            expires: DateTime.UtcNow.AddHours(30), // TODO: Change to 30 minutes in production, this is for testing
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
         );
         return new JwtSecurityTokenHandler().WriteToken(token);
@@ -139,6 +138,10 @@ public class AuthorizationService
 
     public async Task<LoginResponseDTO> Refresh(string refreshToken)
     {
+        if (string.IsNullOrEmpty(refreshToken))
+        {
+            throw new CustomBadRequest("Invalid refresh token");
+        }
         var handler = new JwtSecurityTokenHandler();
         var jsonToken = handler.ReadToken(refreshToken) as JwtSecurityToken;
         int userId = int.Parse(jsonToken.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value);

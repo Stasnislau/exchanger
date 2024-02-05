@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using System.Text.Json.Serialization;
+using database;
 using Newtonsoft.Json;
 public record struct IResponseBody
 {
@@ -31,6 +33,14 @@ public struct RatesResponse
 }
 public class RatesService
 {
+    private readonly ApplicationDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public RatesService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+    {
+        _context = context;
+        _httpContextAccessor = httpContextAccessor;
+    }
     public async Task<RatesResponse> GetCurrentRate(string main, string target)
     {
         using HttpClient client = new();
@@ -64,6 +74,28 @@ public class RatesService
             rate = rate,
             date = date
         };
+    }
 
+    public async Task<bool> SaveRate(string main, string target, decimal value, decimal? amount = null, decimal? result = null)
+    {
+        var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var rate = new Rate
+        {
+            UserId = int.Parse(userId),
+            User = _context.Users.Where(x => x.Id == int.Parse(userId)).FirstOrDefault() ?? throw new CustomBadRequest("User not found"),
+            Value = value,
+            BaseCurrency = main,
+            TargetCurrency = target,
+            Amount = amount,
+            Result = result,
+            CreatedAt = DateTime.UtcNow
+        };
+        await _context.Rates.AddAsync(rate);
+        int success = await _context.SaveChangesAsync();
+        if (success == 0)
+        {
+            throw new CustomBadRequest("Could not save rate");
+        }
+        return true;
     }
 }

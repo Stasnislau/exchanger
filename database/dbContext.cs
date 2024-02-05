@@ -27,7 +27,7 @@ namespace database
                 .WithMany(u => u.Rates)
                 .HasForeignKey(r => r.UserId);
 
-            modelBuilder.Entity<User>().Property(u => u.favorite_currency).HasDefaultValue("usd");
+            modelBuilder.Entity<User>().Property(u => u.favoriteCurrency).HasDefaultValue("usd");
 
             modelBuilder.Entity<User>().Property(u => u.CreatedAt).HasDefaultValueSql("now() at time zone 'utc'");
             modelBuilder.Entity<User>().Property(u => u.PasswordHash).IsRequired();
@@ -36,6 +36,7 @@ namespace database
 
 
             modelBuilder.Entity<Rate>().Property(r => r.CreatedAt).HasDefaultValueSql("now() at time zone 'utc'");
+            modelBuilder.Entity<Rate>().Property(r => r.UserId).IsRequired();
         }
     }
 }

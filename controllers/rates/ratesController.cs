@@ -37,4 +37,36 @@ public class RatesController(RatesService ratesService) : ControllerBase
             throw;
         }
     }
+
+    [HttpPost("save")]
+    [Authorize]
+    public async Task<IActionResult> SaveRate(string main, string target, decimal value, decimal? amount = null, decimal? result = null)
+    {
+        try
+        {
+            bool response = await _ratesService.SaveRate(main, target, value, amount, result);
+            string jsonString = JsonConvert.SerializeObject(response ?
+                new
+                {
+                    message = "Rate saved",
+                    success = true
+                } :
+                new
+                {
+                    message = "Rate not saved",
+                    success = false
+                });
+            return new ContentResult
+            {
+                Content = jsonString,
+                ContentType = "application/json",
+                StatusCode = 200
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error", ex.Message);
+            throw;
+        }
+    }
 }

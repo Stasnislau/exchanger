@@ -9,7 +9,7 @@ namespace database
 
         public int RefreshTokenId { get; set; }
 
-        public string? favorite_currency { get; set; }
+        public string? favoriteCurrency { get; set; }
         public DateTime CreatedAt { get; set; }
 
         // Navigation property
@@ -33,19 +33,19 @@ namespace database
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public int Value { get; set; }
+        public decimal Value { get; set; }
 
-        public required string base_currency { get; set; }
+        public required string BaseCurrency { get; set; }
 
-        public required string target_currency { get; set; }
+        public required string TargetCurrency { get; set; }
 
-        public int? amount { get; set; }
+        public decimal? Amount { get; set; }
 
-        public int? result { get; set; }
+        public decimal? Result { get; set; }
         public DateTime CreatedAt { get; set; }
 
         // Navigation property
-        public required User User { get; set; }
+        public User? User { get; set; }
     }
 }
 

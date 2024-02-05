@@ -40,6 +40,7 @@ public class ExceptionMiddleware
         context.Response.StatusCode = statusCode;
         var jsonError = JsonConvert.SerializeObject(errorResponse);
         await context.Response.WriteAsync(jsonError);
+        Console.WriteLine(exception.Message, exception.StackTrace);
     }
 }
 
