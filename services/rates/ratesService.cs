@@ -98,11 +98,28 @@ public class RatesService
             throw new CustomBadRequest("Could not save rate");
         }
         return true;
-    }   
+    }
 
     public async Task<List<Rate>> GetHistory()
     {
         var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         return await _context.Rates.Where(x => x.UserId == int.Parse(userId)).ToListAsync();
+    }
+
+    public async Task<bool> DeleteRate(int id)
+    {
+        var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var rate = await _context.Rates.Where(x => x.UserId == int.Parse(userId) && x.Id == id).FirstOrDefaultAsync();
+        if (rate == null)
+        {
+            throw new CustomBadRequest("Rate not found");
+        }
+        _context.Rates.Remove(rate);
+        int success = await _context.SaveChangesAsync();
+        if (success == 0)
+        {
+            throw new CustomBadRequest("Could not delete rate");
+        }
+        return true;
     }
 }

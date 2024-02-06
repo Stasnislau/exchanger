@@ -90,4 +90,35 @@ public class RatesController(RatesService ratesService) : ControllerBase
             throw;
         }
     }
+
+    [HttpDelete("delete")]
+    [Authorize]
+    public async Task<IActionResult> DeleteRate(int id)
+    {
+        try
+        {
+            bool response = await _ratesService.DeleteRate(id);
+            string jsonString = JsonConvert.SerializeObject(response ?
+                new
+                {
+                    message = "Rate deleted",
+                    success = true
+                } :
+                new
+                {
+                    message = "Rate not deleted",
+                    success = false
+                });
+            return new ContentResult
+            {
+                Content = jsonString,
+                ContentType = "application/json",
+                StatusCode = 200
+            };
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }
