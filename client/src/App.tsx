@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { MainPage, LoginPage } from './pages'
+import { MainPage, LoginPage, ErrorPage } from './pages'
 
 const availableRoutes = [
   {
@@ -26,7 +26,7 @@ function App() {
           {availableRoutes.map(({ path, component }) => (
             <Route key={path} path={path} Component={component} />
           ))}
-          <Route path="*" element={<h1 className="flex justify-center text-7xl text-red-500">404</h1>} />
+          <Route path="*" Component={ErrorPage} />
         </Routes>
       </div>
     </BrowserRouter>
