@@ -30,3 +30,13 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+body {
+  @apply text-text;
+}
+
+.App {
+  @apply w-[100dvw];
+  @apply h-[100dvh];
+  @apply bg-gradient-to-b from-secondary from-70% inset-0 to-100% mix-blend-screen to-additional;
+}
