@@ -40,11 +40,11 @@ public class RatesController(RatesService ratesService) : ControllerBase
 
     [HttpPost("save")]
     [Authorize]
-    public async Task<IActionResult> SaveRate([FromBody]string main,[FromBody] string target,[FromBody] decimal value,[FromBody] decimal? amount = null,[FromBody] decimal? result = null)
+    public async Task<IActionResult> SaveRate([FromBody] RateDTO dto)
     {
         try
         {
-            bool response = await _ratesService.SaveRate(main, target, value, amount, result);
+            bool response = await _ratesService.SaveRate(dto.main, dto.target, dto.value, dto.amount, dto.result);
             string jsonString = JsonConvert.SerializeObject(response ?
                 new
                 {

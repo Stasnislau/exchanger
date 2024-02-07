@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
+
+
 [ApiController]
 [Route("api/[controller]")]
 public class AuthorizationController
@@ -13,11 +15,11 @@ public class AuthorizationController
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody]string username,[FromBody] string password)
+    public async Task<IActionResult> Login([FromBody] LoginDTO dto)
     {
         try
         {
-            var response = await _AuthorizationService.Login(username, password);
+            var response = await _AuthorizationService.Login(dto.username, dto.password);
             string jsonString = JsonConvert.SerializeObject(response);
             return new ContentResult
             {
@@ -33,11 +35,11 @@ public class AuthorizationController
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] string username,[FromBody] string password,[FromBody] string email)
+    public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
     {
         try
         {
-            var response = await _AuthorizationService.Register(username, password, email);
+            var response = await _AuthorizationService.Register(dto.username, dto.password, dto.email);
             string jsonString = JsonConvert.SerializeObject(response ?
                 new
                 {
