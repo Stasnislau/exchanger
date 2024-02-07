@@ -38,10 +38,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin",
+        builder => builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseCors("AllowOrigin");
 app.UseAuthentication();
 app.UseAuthorization();
 

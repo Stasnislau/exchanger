@@ -55,11 +55,10 @@ const ErrorPage = () => {
             <motion.div
                 initial={{ backgroundColor: 'rgba(0,0,0,0)' }}
                 animate={{ backgroundColor: 'rgba(0,0,0,1)' }}
-                transition={{ duration: 3, ease: "easeInOut" }}
+                transition={{ duration: 2, ease: "easeInOut" }}
                 className="h-screen w-full absolute bg-stone-950 text-7xl font-bold z-[5]"
-            >
-            </motion.div>
-            <div className="h-screen w-full absolute bg-stone-950 text-7xl font-bold z-[10] flex justify-center items-center flex-col gap-10 overflow-hidden">
+            />
+            <div className="h-screen w-full absolute flex justify-center items-center flex-col gap-10 overflow-hidden">
                 <motion.p
                     ref={scope404}
                     className='text-6xl z-10'>404
