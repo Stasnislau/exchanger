@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 public class LoginResponseDTO
 {
     public string? token { get; set; }
-    public string? refreshToken { get; set; }
+    public bool success { get; set; }
 
 }
 
@@ -112,10 +112,18 @@ public class AuthorizationService
             throw new CustomBadRequest("Could not save refresh token");
         }
 
+        _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.Now.ToUniversalTime().AddDays(14)
+        });
+
         return new LoginResponseDTO
         {
             token = token,
-            refreshToken = refreshToken
+            success = true
         };
     }
 
@@ -136,8 +144,9 @@ public class AuthorizationService
         return true;
     }
 
-    public async Task<LoginResponseDTO> Refresh(string refreshToken)
+    public async Task<LoginResponseDTO> Refresh()
     {
+        var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
         if (string.IsNullOrEmpty(refreshToken))
         {
             throw new CustomBadRequest("Invalid refresh token");
@@ -178,10 +187,17 @@ public class AuthorizationService
             throw new CustomBadRequest("Could not save refresh token");
         }
 
+        _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.Now.ToUniversalTime().AddDays(14)
+        });
         return new LoginResponseDTO
         {
+            success = true,
             token = token,
-            refreshToken = newRefreshToken
         };
     }
 

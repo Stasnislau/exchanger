@@ -13,7 +13,7 @@ public class AuthorizationController
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(string username, string password)
+    public async Task<IActionResult> Login([FromBody]string username,[FromBody] string password)
     {
         try
         {
@@ -33,7 +33,7 @@ public class AuthorizationController
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(string username, string password, string email)
+    public async Task<IActionResult> Register([FromBody] string username,[FromBody] string password,[FromBody] string email)
     {
         try
         {
@@ -96,11 +96,11 @@ public class AuthorizationController
 
     [HttpPost("refresh")]
     [Authorize]
-    public async Task<IActionResult> Refresh(string refreshToken)
+    public async Task<IActionResult> Refresh()
     {
         try
         {
-            var response = await _AuthorizationService.Refresh(refreshToken);
+            var response = await _AuthorizationService.Refresh();
             string jsonString = JsonConvert.SerializeObject(response);
             return new ContentResult
             {

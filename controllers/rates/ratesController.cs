@@ -40,7 +40,7 @@ public class RatesController(RatesService ratesService) : ControllerBase
 
     [HttpPost("save")]
     [Authorize]
-    public async Task<IActionResult> SaveRate(string main, string target, decimal value, decimal? amount = null, decimal? result = null)
+    public async Task<IActionResult> SaveRate([FromBody]string main,[FromBody] string target,[FromBody] decimal value,[FromBody] decimal? amount = null,[FromBody] decimal? result = null)
     {
         try
         {
