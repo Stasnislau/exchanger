@@ -23,14 +23,8 @@ public class RatesController(RatesService ratesService) : ControllerBase
         try
         {
             var response = await _ratesService.GetCurrentRate(main, target);
+            return Ok(response);
 
-            string jsonString = JsonConvert.SerializeObject(response);
-            return new ContentResult
-            {
-                Content = jsonString,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
         }
         catch (Exception)
         {
@@ -45,7 +39,7 @@ public class RatesController(RatesService ratesService) : ControllerBase
         try
         {
             bool response = await _ratesService.SaveRate(dto.main, dto.target, dto.value, dto.amount, dto.result);
-            string jsonString = JsonConvert.SerializeObject(response ?
+            var responseMessage = response ?
                 new
                 {
                     message = "Rate saved",
@@ -55,13 +49,8 @@ public class RatesController(RatesService ratesService) : ControllerBase
                 {
                     message = "Rate not saved",
                     success = false
-                });
-            return new ContentResult
-            {
-                Content = jsonString,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
+                };
+            return Ok(responseMessage);
         }
         catch (Exception ex)
         {
@@ -77,13 +66,14 @@ public class RatesController(RatesService ratesService) : ControllerBase
         try
         {
             var response = await _ratesService.GetHistory();
-            string jsonString = JsonConvert.SerializeObject(response);
-            return new ContentResult
+            if (response.Count == 0)
             {
-                Content = jsonString,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
+                return NoContent();
+            }
+            else
+            {
+                return Ok(response);
+            }
         }
         catch (Exception)
         {
@@ -98,7 +88,7 @@ public class RatesController(RatesService ratesService) : ControllerBase
         try
         {
             bool response = await _ratesService.DeleteRate(id);
-            string jsonString = JsonConvert.SerializeObject(response ?
+            var responseMessage = response ?
                 new
                 {
                     message = "Rate deleted",
@@ -108,13 +98,8 @@ public class RatesController(RatesService ratesService) : ControllerBase
                 {
                     message = "Rate not deleted",
                     success = false
-                });
-            return new ContentResult
-            {
-                Content = jsonString,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
+                };
+            return Ok(responseMessage);
         }
         catch (Exception)
         {
