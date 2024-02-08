@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
 import { MainPage, LoginPage, ErrorPage } from './pages'
 import HighOrderComponent from "./components/hoc"
 import { Context } from "./main"
-import { useContext, JSX, useEffect } from "react"
+import { useContext, JSX, useEffect, useState } from "react"
 
 const availableRoutes = [
   {
@@ -18,16 +18,24 @@ const availableRoutes = [
 ]
 
 function App() {
+  const [authChecking, setAuthChecking] = useState(true);
   const store = useContext(Context);
   useEffect(() => {
     window.addEventListener('resize', () => {
       resizeTo(window.screen.width, window.screen.height);
     });
+    return () => {
+      window.removeEventListener('resize', () => {
+        resizeTo(window.screen.width, window.screen.height);
+      });
+    }
   }, []);
 
-  useEffect(() =>  {
+
+  useEffect(() => {
     async function checkAuth() {
       await store.checkAuth();
+      setAuthChecking(false); // Set auth checking to false once the check is complete
     }
     checkAuth();
   }, [store]);
@@ -36,6 +44,13 @@ function App() {
 
     return store.state.isLoggedIn ? children : <Navigate to="/login" />;
   };
+  if (authChecking) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <p className="text-2xl">Checking authentication...</p>
+      </div>
+    )
+  }
 
   return (
     <BrowserRouter>
