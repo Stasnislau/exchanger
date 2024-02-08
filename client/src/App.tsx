@@ -1,8 +1,8 @@
-import { BrowserRouter, Route, Routes, Navigate, Outlet } from "react-router-dom"
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
 import { MainPage, LoginPage, ErrorPage } from './pages'
 import HighOrderComponent from "./components/hoc"
 import { Context } from "./main"
-import { useContext, JSX } from "react"
+import { useContext, JSX, useEffect } from "react"
 
 const availableRoutes = [
   {
@@ -19,11 +19,18 @@ const availableRoutes = [
 
 function App() {
   const store = useContext(Context);
-  addEventListener('resize', () => {
-    document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
-    document.documentElement.style.setProperty('--vw', `${window.innerWidth / 100}px`);
-  }
-  );
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      resizeTo(window.screen.width, window.screen.height);
+    });
+  }, []);
+
+  useEffect(() =>  {
+    async function checkAuth() {
+      await store.checkAuth();
+    }
+    checkAuth();
+  }, [store]);
 
   const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 

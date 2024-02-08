@@ -2,11 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-
-
 [ApiController]
 [Route("api/[controller]")]
-public class AuthorizationController
+public class AuthorizationController : ControllerBase
 {
     private readonly AuthorizationService _AuthorizationService;
     public AuthorizationController(AuthorizationService authorizationService)
@@ -20,13 +18,7 @@ public class AuthorizationController
         try
         {
             var response = await _AuthorizationService.Login(dto.username, dto.password);
-            string jsonString = JsonConvert.SerializeObject(response);
-            return new ContentResult
-            {
-                Content = jsonString,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -40,7 +32,7 @@ public class AuthorizationController
         try
         {
             var response = await _AuthorizationService.Register(dto.username, dto.password, dto.email);
-            string jsonString = JsonConvert.SerializeObject(response ?
+            var responseMessage = response ?
                 new
                 {
                     message = "User created",
@@ -50,14 +42,9 @@ public class AuthorizationController
                 {
                     message = "User not created",
                     success = false
-                });
+                };
 
-            return new ContentResult
-            {
-                Content = jsonString,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
+            return Ok(responseMessage);
         }
         catch (Exception)
         {
@@ -72,7 +59,7 @@ public class AuthorizationController
         try
         {
             bool response = await _AuthorizationService.Logout();
-            string jsonString = JsonConvert.SerializeObject(response ?
+            var responseMessage = response ?
                 new
                 {
                     message = "User logged out",
@@ -82,13 +69,8 @@ public class AuthorizationController
                 {
                     message = "User not logged out",
                     success = false
-                });
-            return new ContentResult
-            {
-                Content = jsonString,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
+                };
+            return Ok(responseMessage);
         }
         catch (Exception)
         {
@@ -103,13 +85,7 @@ public class AuthorizationController
         try
         {
             var response = await _AuthorizationService.Refresh();
-            string jsonString = JsonConvert.SerializeObject(response);
-            return new ContentResult
-            {
-                Content = jsonString,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
+            return Ok(response);
         }
         catch (Exception)
         {

@@ -26,16 +26,32 @@ const LoginPage = observer(() => {
         onSubmit();
     }
     const onSubmit = async () => {
-        await store.login(username, password);
-        if (store.state.isLoggedIn) {
+        const res = await store.login(username, password) as string | undefined;
+        if (res) {
+            setError(res);
+        }
+        else {
             navigate('/');
-        } else {
-            setError('Invalid credentials');
         }
     }
+    useEffect(() => {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleSubmit();
+            }
+            return () => {
+                document.removeEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        handleSubmit();
+                    }
+                });
+            }
+        });
+    }, []);
+
     return (
         <section className="h-screen w-full absolute">
-            <div className='absolute top-[40%] left-1/2 flex-col translate-x-[-50%] translate-y-[-50%]'>
+            <div className='absolute top-[50%] left-1/2 flex-col translate-x-[-50%] translate-y-[-50%]'>
                 <div className='flex flex-col items-center'>
                     <div className='relative flex flex-row justify-center'>
                         <img src="src/assets/images/euro.png" alt="euro" className='w-[20%] m-0 rounded-full' style={{

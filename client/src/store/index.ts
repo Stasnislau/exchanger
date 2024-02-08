@@ -15,67 +15,88 @@ export default class Store {
     this.checkAuth();
   }
 
-  checkAuth() {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      this.state.isLoggedIn = true;
-    } else {
-      this.state.isLoggedIn = false;
-    }
+  set isLoading(value: boolean) {
+    this.state.isLoading = value;
+  }
+
+  set isLoggedIn(value: boolean) {
+    this.state.isLoggedIn = value;
+  }
+
+  async checkAuth() {
+    await this.refreshToken();
   }
 
   async login(username: string, password: string) {
-    const params = new URLSearchParams({
-      username: username,
-      password: password,
-    });
     try {
-      this.state.isLoading = true;
-      console.log(`${import.meta.env.VITE_API_URL}`);
+      this.isLoading = true;
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/authorization/login?${params}`,
+        `${import.meta.env.VITE_API_URL}/authorization/login`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
+          body: JSON.stringify({ username, password }),
         }
       );
       const data = await response.json();
       if (response.ok && data.token) {
         localStorage.setItem("authToken", data.token);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        this.state.isLoggedIn = true;
+        this.isLoggedIn = true;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      return error.message;
     } finally {
-      this.state.isLoading = false;
-      this.checkAuth();
+      this.isLoading = false;
     }
   }
 
   async logout() {
     try {
-      this.state.isLoading = true;
+      this.isLoading = true;
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/authorization/logout`,
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
           },
+          credentials: "include",
         }
       );
       if (response.ok) {
         localStorage.removeItem("authToken");
-        localStorage.removeItem("refreshToken");
         this.state.isLoggedIn = false;
       }
     } catch (error) {
       console.log(error);
     } finally {
-      this.state.isLoading = false;
+      this.isLoading = false;
+    }
+  }
+
+  async refreshToken() {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/authorization/refresh`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+          },
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+      if (response.ok && data.token) {
+        localStorage.setItem("authToken", data.token);
+        this.isLoggedIn = true;
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 }

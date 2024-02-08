@@ -115,9 +115,9 @@ public class AuthorizationService
         _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
+            Expires = DateTime.Now.ToUniversalTime().AddDays(14),
             SameSite = SameSiteMode.None,
-            Expires = DateTime.Now.ToUniversalTime().AddDays(14)
+            Secure = true,
         });
 
         return new LoginResponseDTO
@@ -147,6 +147,7 @@ public class AuthorizationService
     public async Task<LoginResponseDTO> Refresh()
     {
         var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+
         if (string.IsNullOrEmpty(refreshToken))
         {
             throw new CustomBadRequest("Invalid refresh token");
@@ -190,9 +191,10 @@ public class AuthorizationService
         _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
+            Expires = DateTime.Now.ToUniversalTime().AddDays(14),
             SameSite = SameSiteMode.None,
-            Expires = DateTime.Now.ToUniversalTime().AddDays(14)
+            Secure = true,
+
         });
         return new LoginResponseDTO
         {
