@@ -6,12 +6,10 @@ const Header = () => {
     const store = useContext(Context);
     const navigate = useNavigate();
     return (
-        // Use the Tailwind CSS classes to style your header similarly to the image
         <header className="bg-gradient-to-t from-[#0fb2fc] from-70% inset-0 to-100% mix-blend-screen to-[#10cffc] md:h-14 flex"
             style={
                 {
                     boxShadow: '0 0 3px rgba(0, 0, 0), 0 0 10px rgba(36, 93, 176, 0.8), 0 0 30px rgba(36, 93, 176, 0.8),  0 0 40px rgba(255, 255, 255, 0.6)'
-
                 }
             }
         >
