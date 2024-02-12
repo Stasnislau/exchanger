@@ -9,11 +9,11 @@ interface RightCardProps {
         tag: string;
     }[],
     setTargetCurrency: any
-
+    value: number
 }
 
 const RightCard = ({
-    availableCurrencies, setTargetCurrency
+    availableCurrencies, setTargetCurrency, value
 }: RightCardProps) => {
 
     return (
@@ -32,7 +32,7 @@ const RightCard = ({
                         textShadow: "2px 1px 0px rgb(0, 5, 24)"
                     }}>
                     <img src={leftArrow} alt="left" className="w-10 h-10 inline mr-4" />
-                    0.000,025
+                    {1/value < 1 ? (1/value).toFixed(4) : (1/value).toFixed(2)}
                 </div>
                 <img src={receiveIcon} alt="give" className="w-32 h-32" />
 

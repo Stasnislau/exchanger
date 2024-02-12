@@ -27,15 +27,14 @@ const MainPage = () => {
                     </p>
                 </div>
                 <div className="flex flex-row w-full flex-wrap lg:flex-nowrap text-black justify-between">
-                    <LeftCard availableCurrencies={availableCurrencies} setMainCurrency={setMainCurrency} />
-                    <RightCard availableCurrencies={availableCurrencies} setTargetCurrency={setTargetCurrency} />
+                    <LeftCard availableCurrencies={availableCurrencies} setMainCurrency={setMainCurrency} value={1000}/>
+                    <RightCard availableCurrencies={availableCurrencies} setTargetCurrency={setTargetCurrency} value={1000} />
                 </div>
                 <div className="flex flex-row items-center mt-4 w-full">
                     <div className="w-2/5 py-2 bg-[#f1f2e0] text-black flex flex-row justify-center"
                         style={{
                             borderTopLeftRadius: "999px",
                             borderBottomLeftRadius: "999px",
-
                         }}
                     >
                         <Input

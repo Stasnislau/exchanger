@@ -9,11 +9,12 @@ interface LeftCardProps {
         tag: string;
     }[],
     setMainCurrency: any
+    value: number
 
 }
 
 const LeftCard = ({
-    availableCurrencies, setMainCurrency
+    availableCurrencies, setMainCurrency, value
 }: LeftCardProps) => {
     return (
         <div className="flex flex-col mt-8 rounded-lg py-4 px-8 lg:w-[48%] w-full bg-gradient-to-b from-[#d5e4db] to-[#b0c9c7] border-white border-2"
@@ -31,7 +32,7 @@ const LeftCard = ({
                         boxShadow: "0px 0px 4px rgb(123, 150, 156), 0px -3px 2px rgb(33, 139, 186), 0px -6px 2px rgb(225, 255, 255), 0px 6px 2px rgb(0, 5, 24)",
                         textShadow: "2px 1px 0px rgb(0, 5, 24)"
                     }}>
-                    0.000,025
+                     {value}
                     <img src={rightArrow} alt="left" className="w-10 h-10 inline ml-4" />
                 </div>
 
