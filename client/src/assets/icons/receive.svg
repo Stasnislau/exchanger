@@ -1,15 +1,23 @@
 <svg width="135px" height="135px" viewBox="0 0 135 135" xmlns="http://www.w3.org/2000/svg" version="1.1">
     <defs>
-        <radialGradient id="glossy-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-            <stop offset="0%" style="stop-color:#04a4f9;stop-opacity:1" />
-            <stop offset="50%" style="stop-color:#05a9fc;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#02a1f7;stop-opacity:1" />
+        <radialGradient id="glossy-gradient" cx="50%" cy="50%" r="80%" fx="35%" fy="10%">
+            <!-- Brightest at the top -->
+            <stop offset="0%" style="stop-color:#0294ff;stop-opacity:1" />
+            <stop offset="10%" style="stop-color:#0096fa;stop-opacity:1" />
+            <stop offset="20%" style="stop-color:#00b6f9;stop-opacity:1" />
+            <stop offset="30%" style="stop-color:#0089ec;stop-opacity:1" />
+            <!-- Transition to darker -->
+            <stop offset="50%" style="stop-color:#035ae2;stop-opacity:1" />
+            <stop offset="70%" style="stop-color:#0741b9;stop-opacity:1" />
+            <stop offset="90%" style="stop-color:#00226a;stop-opacity:1" />
+            <!-- Darkest at the bottom -->
+            <stop offset="100%" style="stop-color:#001d5a;stop-opacity:1" />
         </radialGradient>
         <!-- Adding a black shadow for the 3D effect -->
         <filter id="shadow" x="-20%" y="-20%" width="200%" height="200%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
-            <feOffset in="blur" dx="3" dy="3" result="offsetBlur" />
-            <feComposite in="SourceGraphic" in2="offsetBlur" operator="over"/>
+            <feOffset in="blur" dx="2" dy="1" result="offsetBlur" />
+            <feComposite in="SourceGraphic" in2="offsetBlur" operator="over" />
         </filter>
         <!-- Adding a white glow for the glowing effect -->
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -20,11 +28,12 @@
                 <feMergeNode in="SourceGraphic" />
             </feMerge>
             <feGaussianBlur in="mask" stdDeviation="2.5" result="blurred" />
-            <feBlend in="SourceGraphic" in2="blurred" mode="normal"/>
+            <feBlend in="SourceGraphic" in2="blurred" mode="normal" />
         </filter>
     </defs>
     <g filter="url(#shadow)">
-        <text x="50%" y="50%" font-family="Arial" font-size="100" fill="url(#glossy-gradient)" text-anchor="middle"
-            dominant-baseline="middle" filter="url(#glow)">$</text>
+        <text x="50%" y="50.5%" font-family="Arial" font-size="140" font-stretch="semi-expanded" fill="url(#glossy-gradient)" text-anchor="middle"
+            dominant-baseline="central" filter="url(#glow)">$
+        </text>
     </g>
 </svg>

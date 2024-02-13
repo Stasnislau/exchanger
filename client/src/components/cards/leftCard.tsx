@@ -32,7 +32,7 @@ const LeftCard = ({
                         boxShadow: "0px 0px 4px rgb(123, 150, 156), 0px -3px 2px rgb(33, 139, 186), 0px -6px 2px rgb(225, 255, 255), 0px 6px 2px rgb(0, 5, 24)",
                         textShadow: "2px 1px 0px rgb(0, 5, 24)"
                     }}>
-                     {value}
+                     {value < 1 ? (value).toFixed(4) : (value).toFixed(2)}
                     <img src={rightArrow} alt="left" className="w-10 h-10 inline ml-4" />
                 </div>
 
@@ -90,6 +90,7 @@ const LeftCard = ({
                                 ...base,
                                 backgroundColor: '#b0c9c7',
                                 color: 'black',
+                                zIndex: 5
                             }),
                             option: (base, props) => ({
                                 ...base,

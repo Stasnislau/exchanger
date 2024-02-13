@@ -32,7 +32,7 @@ const RightCard = ({
                         textShadow: "2px 1px 0px rgb(0, 5, 24)"
                     }}>
                     <img src={leftArrow} alt="left" className="w-10 h-10 inline mr-4" />
-                    {1/value < 1 ? (1/value).toFixed(4) : (1/value).toFixed(2)}
+                    {1 / value < 1 ? (1 / value).toFixed(4) : (1 / value).toFixed(2)}
                 </div>
                 <img src={receiveIcon} alt="give" className="w-32 h-32" />
 
@@ -90,6 +90,7 @@ const RightCard = ({
                                 ...base,
                                 backgroundColor: '#b0c9c7',
                                 color: 'black',
+                                zIndex: 5
                             }),
                             option: (base, props) => ({
                                 ...base,

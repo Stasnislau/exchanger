@@ -32,13 +32,13 @@ const MainPage = () => {
                     <LeftCard availableCurrencies={availableCurrencies} setMainCurrency={setMainCurrency} value={1000} />
                     <RightCard availableCurrencies={availableCurrencies} setTargetCurrency={setTargetCurrency} value={1000} />
                 </div>
-                <div className="flex flex-row items-center mt-8 w-full h-10 "
+                <div className="flex flex-row items-center mt-8 w-full h-10"
                 >
                     <div className="w-2/5 bg-[#f1f2e0] text-black flex flex-row justify-center py-2"
                         style={{
                             borderTopLeftRadius: "999px",
                             borderBottomLeftRadius: "999px",
-                            boxShadow: "0px 2px 10px rgb(0, 31, 144), 0px 4px 1px rgba(248, 253, 252, 0.5)",
+                            boxShadow: "0px 1px 10px rgb(0, 31, 144), 0px 2px 1px rgba(248, 253, 252, 0.5)",
                             zIndex: 2
                         }}
                     >
@@ -54,13 +54,13 @@ const MainPage = () => {
                         onMouseLeave={() => setIsSwapped(false)}
                         style={
                             {
-                                boxShadow: "0px 4px 1px rgba(0, 31, 144, 0.5), 0px 4px 1px rgba(248, 253, 252, 0.5)",
+                                boxShadow: "0px 1px 1px rgba(0, 31, 144, 0.4), 0px 1px 5px rgba(248, 253, 252, 0.4)",
                                 zIndex: 3
                             }
                         }
                     >
                         <button className="w-full py-2 flex justify-center items-center">
-                            <img src={SwapIcon} alt="swap" className={`h-10 hover:scale-110 transition 
+                            <img src={SwapIcon} alt="swap" className={`h-10 ${isSwapped ? "scale-110" : ""} transition 
                             ${isSwapped ? "rotate-180" : "rotate-0"}
                             duration-300 ease-in-out transform`} />
                         </button>
@@ -69,7 +69,7 @@ const MainPage = () => {
                         style={{
                             borderTopRightRadius: "999px",
                             borderBottomRightRadius: "999px",
-                            boxShadow: "0px 2px 10px rgb(0, 31, 144), 0px 4px 1px rgba(248, 253, 252, 0.5)",
+                            boxShadow: "0px 1px 10px rgb(0, 31, 144), 0px 2px 1px rgba(248, 253, 252, 0.5)",
                             zIndex: 1
                         }}
                     >
@@ -81,8 +81,31 @@ const MainPage = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-row justify-between items-center mt-8">
+                <div className="flex flex-row items-center mt-8 w-full h-10 justify-between">
+                    <button className="w-2/5 rounded-full bg-gradient-to-b from-[#13c2fb] to-[#0261e3] flex flex-row justify-center py-2
+                        hover:saturate-200 transition duration-300 ease-in-out"
 
+                        style={{
+                            boxShadow: "1px 2px 40px rgb(0, 14, 63)"
+                        }}
+                    >
+                        Convert
+                    </button>
+
+                    <button className="w-1/6 rounded-full bg-gradient-to-b from-blue-300 to-indigo-500 flex flex-row justify-center py-2 hover:saturate-150 transition duration-300 ease-in-out"
+                        style={{
+                            boxShadow: "1px 2px 40px rgb(0, 14, 63)"
+                        }}
+                    >
+                        Save
+                    </button>
+                    <button className="w-1/6 rounded-full bg-gradient-to-b from-[#FFB347] to-[#FF8C00] flex flex-row justify-center py-2 hover:saturate-200 transition duration-300 ease-in-out"
+                        style={{
+                            boxShadow: "1px 2px 40px rgb(0, 14, 63)"
+                        }}
+                    >
+                        Reset
+                    </button>
                 </div>
 
             </div>
