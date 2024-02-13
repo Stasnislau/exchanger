@@ -45,10 +45,21 @@ export default class Store {
       if (response.ok && data.token) {
         localStorage.setItem("authToken", data.token);
         this.isLoggedIn = true;
+        return {
+          success: true,
+          message: "Login successful",
+        };
       }
+      return {
+        success: false,
+        message: data.Message,
+      };
     } catch (error: any) {
-      console.log(error);
-      return error.message;
+      console.log(error, "error");
+      return {
+        success: false,
+        message: error.message,
+      };
     } finally {
       this.isLoading = false;
     }
@@ -62,7 +73,7 @@ export default class Store {
         {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
           credentials: "include",
         }
@@ -85,7 +96,7 @@ export default class Store {
         {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
           credentials: "include",
         }

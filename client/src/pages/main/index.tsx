@@ -82,26 +82,28 @@ const MainPage = () => {
                 </div>
 
                 <div className="flex flex-row items-center mt-8 w-full h-10 justify-between">
-                    <button className="w-2/5 rounded-full bg-gradient-to-b from-[#13c2fb] to-[#0261e3] flex flex-row justify-center py-2
-                        hover:saturate-200 transition duration-300 ease-in-out"
+                    <button className="w-2/5 rounded-full bg-gradient-to-b from-[#13c2fb] to-[#0261e3] flex flex-row justify-center py-2 hover:scale-105 hover:saturate-200 transition duration-300 ease-in-out"
 
                         style={{
-                            boxShadow: "1px 2px 40px rgb(0, 14, 63)"
+                            textShadow: '2px 0 2px rgba(0, 0, 0, 0.7)',
+                            boxShadow: '1px 2px 40px rgb(0, 14, 63), 0 0 20px rgba(36, 93, 176, 0.5), 0 0 40px rgba(255, 255, 255, 0.6)'
                         }}
                     >
                         Convert
                     </button>
 
-                    <button className="w-1/6 rounded-full bg-gradient-to-b from-blue-300 to-indigo-500 flex flex-row justify-center py-2 hover:saturate-150 transition duration-300 ease-in-out"
+                    <button className="w-1/6 rounded-full bg-gradient-to-b from-blue-300 to-indigo-500 flex flex-row justify-center py-2 hover:scale-105 hover:saturate-150 transition duration-300 ease-in-out"
                         style={{
-                            boxShadow: "1px 2px 40px rgb(0, 14, 63)"
+                            textShadow: '2px 0 2px rgba(0, 0, 0, 0.7)',
+                            boxShadow: '1px 2px 40px rgb(0, 14, 63), 0 0 20px rgba(36, 93, 176, 0.5), 0 0 40px rgba(255, 255, 255, 0.6)'
                         }}
                     >
                         Save
                     </button>
-                    <button className="w-1/6 rounded-full bg-gradient-to-b from-[#FFB347] to-[#FF8C00] flex flex-row justify-center py-2 hover:saturate-200 transition duration-300 ease-in-out"
+                    <button className="w-1/6 rounded-full bg-gradient-to-b from-[#FFB347] to-[#FF8C00] flex flex-row justify-center py-2 hover:scale-105 hover:saturate-200 transition duration-300 ease-in-out"
                         style={{
-                            boxShadow: "1px 2px 40px rgb(0, 14, 63)"
+                            textShadow: '2px 0 2px rgba(0, 0, 0, 0.7)',
+                            boxShadow: '1px 2px 40px rgb(0, 14, 63), 0 0 20px rgba(36, 93, 176, 0.5), 0 0 40px rgba(184, 184, 184, 0.6)'
                         }}
                     >
                         Reset
