@@ -1,9 +1,10 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Header } from "../../components";
 import { availableCurrencies } from "../../constants";
 import RightCard from "../../components/cards/rightCard";
 import Input from "../../components/mui/input";
 import LeftCard from "../../components/cards/leftCard";
+import SwapIcon from "../../assets/icons/swap.svg";
 
 const MainPage = () => {
     const [date, setDate] = useState(new Date());
@@ -11,6 +12,7 @@ const MainPage = () => {
     const [mainCurrencyValue, setMainCurrencyValue] = useState(0);
     const [targetCurrency, setTargetCurrency] = useState("ETH");
     const [targetCurrencyValue, setTargetCurrencyValue] = useState(0);
+    const [isSwapped, setIsSwapped] = useState(false);
 
     return (
         <div className="w-full h-screen ">
@@ -27,14 +29,17 @@ const MainPage = () => {
                     </p>
                 </div>
                 <div className="flex flex-row w-full flex-wrap lg:flex-nowrap text-black justify-between">
-                    <LeftCard availableCurrencies={availableCurrencies} setMainCurrency={setMainCurrency} value={1000}/>
+                    <LeftCard availableCurrencies={availableCurrencies} setMainCurrency={setMainCurrency} value={1000} />
                     <RightCard availableCurrencies={availableCurrencies} setTargetCurrency={setTargetCurrency} value={1000} />
                 </div>
-                <div className="flex flex-row items-center mt-4 w-full">
-                    <div className="w-2/5 py-2 bg-[#f1f2e0] text-black flex flex-row justify-center"
+                <div className="flex flex-row items-center mt-8 w-full h-10 "
+                >
+                    <div className="w-2/5 bg-[#f1f2e0] text-black flex flex-row justify-center py-2"
                         style={{
                             borderTopLeftRadius: "999px",
                             borderBottomLeftRadius: "999px",
+                            boxShadow: "0px 2px 10px rgb(0, 31, 144), 0px 4px 1px rgba(248, 253, 252, 0.5)",
+                            zIndex: 2
                         }}
                     >
                         <Input
@@ -43,13 +48,29 @@ const MainPage = () => {
                             onChange={(e: any) => setMainCurrencyValue(e.target.value)}
                         />
                     </div>
-                    <div className="w-1/5 py-2 bg-[#bbd0cd] text-black flex flex-row justify-center">
-                        <p className="text-4xl font-bold">=</p>
+                    <div className="w-1/5 bg-gradient-to-b  border-red-800 from-[#b5c7c5] to-[#a7c2ce] text-black flex flex-row justify-center 
+                        hover:to-[#b0c9d3] hover:from-[#b4c9c6] transition duration-300 ease-in-out"
+                        onMouseEnter={() => setIsSwapped(true)}
+                        onMouseLeave={() => setIsSwapped(false)}
+                        style={
+                            {
+                                boxShadow: "0px 4px 1px rgba(0, 31, 144, 0.5), 0px 4px 1px rgba(248, 253, 252, 0.5)",
+                                zIndex: 3
+                            }
+                        }
+                    >
+                        <button className="w-full py-2 flex justify-center items-center">
+                            <img src={SwapIcon} alt="swap" className={`h-10 hover:scale-110 transition 
+                            ${isSwapped ? "rotate-180" : "rotate-0"}
+                            duration-300 ease-in-out transform`} />
+                        </button>
                     </div>
                     <div className="w-2/5 py-2 bg-[#f1f2e0] text-black flex flex-row justify-center"
                         style={{
                             borderTopRightRadius: "999px",
                             borderBottomRightRadius: "999px",
+                            boxShadow: "0px 2px 10px rgb(0, 31, 144), 0px 4px 1px rgba(248, 253, 252, 0.5)",
+                            zIndex: 1
                         }}
                     >
                         <Input

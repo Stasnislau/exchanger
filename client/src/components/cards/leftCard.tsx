@@ -41,7 +41,7 @@ const LeftCard = ({
                 <Select
                     options={availableCurrencies.map((currency) => ({ value: currency.tag, label: currency.name }))}
                     isSearchable
-                    maxMenuHeight={200} // Adjust this value to control the max height of the dropdown menu
+                    maxMenuHeight={150}
                     className="w-[68%] border-none"
                     placeholder="Select Currency"
                     onChange={(e: any) => setMainCurrency(e.value)}
