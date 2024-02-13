@@ -18,10 +18,10 @@ const MainPage = () => {
         <div className="w-full h-screen ">
             <Header />
             <div className="justify-center items-center md:mt-8 mt-4 md:mx-40 mx-10 flex flex-col">
-                <p className="text-6xl text-center">Currency Exchange</p>
+                <p className="md:text-6xl text-3xl  text-center">Currency Exchange</p>
                 <div className="flex justify-start items-center p-2 md:mt-8 mt-4 w-4/5 rounded-full bg-[#f5f4de] border-white border-[2px] "
                     style={{
-                        boxShadow: "0px 6px 2px rgb(9, 42, 108), 0px 4px 1px rgb(248, 253, 252)  , 0px -3px 2px rgb(0, 5, 24) "
+                        boxShadow: "0px 1px 10px rgb(0, 31, 144), 0px 2px 1px rgba(248, 253, 252, 0.5)",
                     }}
                 >
                     <p className="text-md text-black mx-4">

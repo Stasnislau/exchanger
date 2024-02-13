@@ -85,7 +85,7 @@ const LoginPage = observer(() => {
                                     }
                                 }
                             />
-                            <div className=''>
+                            <div className='flex justify-between flex-row'>
                                 <button className="text-text pl-2 hover:text-primary transition duration-500 ease-in-out"
                                     style={{
                                         textShadow: '-2px 0 3px rgba(0, 0, 0, 0.8)',
@@ -93,16 +93,25 @@ const LoginPage = observer(() => {
                                         background: 'none',
                                     }}
                                 >Forgot Password?</button>
+                                <button className="text-text pl-2 hover:text-primary transition duration-500 ease-in-out"
+                                    style={{
+                                        textShadow: '-2px 0 3px rgba(0, 0, 0, 0.8)',
+                                        border: 'none',
+                                        background: 'none',
+                                    }}
+                                >Create Account</button>
                             </div>
+
+
                             <div className='flex justify-center'>
                                 <button
                                     disabled={store.state.isLoading}
                                     onClick={handleSubmit}
-                                    className='mb-2 bg-primary xl:w-1/2 w-3/4 text-white font-bold py-2 rounded-3xl  
-                                    focus:outline-none focus:ring-0 hover:scale-105 hover:bg-primaryHover transition duration-500 ease-in-out disabled:opacity-50'
+                                    className='mb-2 bg-gradient-to-b from-[#13c2fb] to-[#0261e3] xl:w-1/2 w-3/4 text-white font-bold py-2 rounded-3xl  
+                                    focus:outline-none focus:ring-0 hover:scale-105 hover:saturate-150 transition duration-500 ease-in-out disabled:opacity-50'
                                     style={{
                                         textShadow: '2px 0 2px rgba(0, 0, 0, 0.7)',
-                                        boxShadow: '0px 6px 0px #242eb3, 0 0 10px rgba(36, 93, 176, 0.8), 0 0 20px rgba(36, 93, 176, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.8)'
+                                        boxShadow: '1px 2px 40px rgb(0, 14, 63), 0 0 20px rgba(36, 93, 176, 0.5), 0 0 100px rgba(255, 255, 255, 0.8)'
                                     }}
                                     type="submit">Log in
                                 </button>
@@ -111,8 +120,9 @@ const LoginPage = observer(() => {
                                 <div className='absolute bottom-0 left-1/2 translate-x-[-50%] translate-y-[-50%]'>
                                     <p
                                         style={{
-                                            textShadow: '2px 0 2px rgba(0, 0, 0, 0.7)',
-                                        }}
+                                            textShadow: '2px 0 2px rgba(0, 0, 0, 0.7), 0 0 100px rgba(255, 255, 255, 0.8)',
+                                            
+                                        }} 
                                         className='text-red-500 '>{error}</p>
                                 </div>
                             }

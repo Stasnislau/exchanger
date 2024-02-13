@@ -20,15 +20,24 @@ const availableRoutes = [
 function App() {
   const [authChecking, setAuthChecking] = useState(true);
   const store = useContext(Context);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
   useEffect(() => {
-    window.addEventListener('resize', () => {
-      resizeTo(window.screen.width, window.screen.height);
-    });
-    return () => {
-      window.removeEventListener('resize', () => {
-        resizeTo(window.screen.width, window.screen.height);
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
       });
     }
+
+    window.addEventListener('resize', handleResize);
+
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
 
