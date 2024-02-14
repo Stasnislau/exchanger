@@ -39,4 +39,5 @@ body {
   @apply w-[100dvw];
   @apply h-[100dvh];
   @apply bg-gradient-to-b from-[#165a87] from-70% inset-0 to-100% mix-blend-screen to-[#051c3b];
+  @apply overflow-x-hidden;
 }

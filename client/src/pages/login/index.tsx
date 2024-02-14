@@ -49,11 +49,11 @@ const LoginPage = observer(() => {
                             boxShadow: '0 0 10px rgba(36, 93, 176, 0.8), 0 0 30px rgba(36, 93, 176, 0.8),  0 0 40px rgba(255, 255, 255, 0.6)'
                         }} />
                     </div>
-                    <div className='flex flex-col pt-8 xl:w-3/4 pb-14'>
+                    <div className='flex flex-col pt-8 w-full xl:w-3/4 pb-14'>
                         <form onSubmit={handleSubmit} >
-                            <div className='flex flex-col gap-6 px-10'>
+                            <div className='flex flex-col gap-6 sm:px-10'>
                                 <input
-                                    className="mb-2 bg-white border border-blue-200 shadow-xl rounded-3xl p-4 text-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 "
+                                    className="mb-2 bg-white border border-blue-200 shadow-xl rounded-3xl sm:p-4 p-2 sm:text-xl text-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 "
                                     type="text"
                                     placeholder="Username"
                                     value={username}
@@ -66,7 +66,7 @@ const LoginPage = observer(() => {
                                 />
 
                                 <input
-                                    className="mb-2 bg-white border border-blue-200 shadow-xl rounded-3xl p-4 text-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 "
+                                    className="mb-2 bg-white border border-blue-200 shadow-xl rounded-3xl sm:p-4 p-2 sm:text-xl text-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 "
                                     type="password"
                                     placeholder="Password"
                                     autoComplete='off'
@@ -79,7 +79,7 @@ const LoginPage = observer(() => {
                                     }
                                 />
                                 <div className='flex justify-between flex-row'>
-                                    <button className="text-text pl-2 hover:text-primary transition duration-500 ease-in-out"
+                                    <button className="text-text sm:pl-2 hover:text-primary transition duration-500 ease-in-out"
                                         style={{
                                             textShadow: '-2px 0 3px rgba(0, 0, 0, 0.8)',
                                             border: 'none',

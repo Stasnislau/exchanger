@@ -17,33 +17,33 @@ const RightCard = ({
 }: RightCardProps) => {
 
     return (
-        <div className="flex flex-col mt-8 rounded-lg py-4 px-8 lg:w-[48%] w-full bg-gradient-to-b from-[#d5e4db] to-[#b0c9c7] border-white border-2"
+        <div className="flex flex-col md:mt-8 mt-4 rounded-lg md:py-4 py-2 lg:px-8 sm:px-4 px-2 lg:w-[48%] w-full bg-gradient-to-b from-[#d5e4db] to-[#b0c9c7] border-white border-2"
             style={{
                 boxShadow: "2px 4px 6px rgb(9, 71, 166)"
             }}
         >
-            <p className="text-lg font-bold">
+            <p className="tsm:text-lg text-md font-bold">
                 Target Currency
             </p>
-            <div className="flex flex-row justify-between items-center">
-                <div className="py-4 h-fit px-8 rounded-full bg-[#082748] text-white text-3xl font-bold flex flex-row justify-between items-center"
+            <div className="flex flex-row justify-between items-center pt-2">
+                <div className="md:py-4 h-fit md:px-8 px-4 rounded-full bg-[#082748] text-white md:text-3xl sm:text-2xl text-lg font-bold flex flex-row justify-between items-center"
                     style={{
                         boxShadow: "0px 0px 4px rgb(123, 150, 156), 0px -3px 2px rgb(33, 139, 186), 0px -6px 2px rgb(225, 255, 255), 0px 6px 2px rgb(0, 5, 24)",
                         textShadow: "2px 1px 0px rgb(0, 5, 24)"
                     }}>
-                    <img src={leftArrow} alt="left" className="w-10 h-10 inline mr-4" />
+                    <img src={leftArrow} alt="left" className="md:w-10 md:h-10 sm:w-8 sm:h-8 w-6 h-6 inline sm:mr-4 mr-2" />
                     {1 / value < 1 ? (1 / value).toFixed(4) : (1 / value).toFixed(2)}
                 </div>
-                <img src={receiveIcon} alt="give" className="w-32 h-32" />
+                <img src={receiveIcon} alt="give" className="lg:w-32 lg:h-32 sm:w-20 sm:h-20 w-12 h-12 mr-3 sm:mr-0" />
 
             </div>
-            <div className="py-4 h-fit px-8 text-white text-lg flex flex-row justify-between items-center">
+            <div className="py-4 h-fit xl:px-8 md:px-4 px-2 text-white md:text-lg sm:text-md text-sm flex flex-row justify-between items-center">
                 <Select
                     options={availableCurrencies.map((currency) => ({ value: currency.tag, label: currency.name }))}
                     isSearchable
                     maxMenuHeight={150}
                     className="w-[68%] border-none"
-                    placeholder="Select Currency"
+                    placeholder="Currency"
                     onChange={(e: any) => setTargetCurrency(e.value)}
                     styles={
                         {
@@ -125,7 +125,7 @@ const RightCard = ({
                     }
                 />
                 <input type="number"
-                    className="w-[22%] rounded-full bg-[#f2f0df] py-2 px-4 text-black text-sm border-[#001b44] border-2 focus:outline-none"
+                    className="w-[28%] rounded-full bg-[#f2f0df] py-2 md:px-4 px-2 text-black text-sm border-[#001b44] sm:border-2 border-[1px] focus:outline-none"
                     min="0"
                     placeholder="Rate"
                     disabled
