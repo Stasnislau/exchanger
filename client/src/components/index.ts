@@ -1,4 +1,4 @@
-import LoginModal from "./forgotPasswordModal";
+import LoginModal from "./modals/forgotPasswordModal";
 import Header from "./header";
 import HighOrderComponent from "./hoc";
 

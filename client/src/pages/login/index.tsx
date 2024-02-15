@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { Context } from '../../main';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
+import { CreateAccountModal, ForgotPasswordModal } from '../../components/modals';
 const LoginPage = observer(() => {
     const store = useContext(Context);
     const navigate = useNavigate();
@@ -14,8 +15,10 @@ const LoginPage = observer(() => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
+    const [showCreateAccountModal, setShowCreateAccountModal] = useState<boolean>(false);
+    const [showForgotPasswordModal, setShowForgotPasswordModal] = useState<boolean>(false);
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault(); 
+        e.preventDefault();
         if (username === '') {
             setError('Username is required');
             return false;
@@ -85,6 +88,8 @@ const LoginPage = observer(() => {
                                             border: 'none',
                                             background: 'none',
                                         }}
+                                        type='button'
+                                        onClick={() => setShowForgotPasswordModal(true)}
                                     >Forgot Password?</button>
                                     <button className="text-text pl-2 hover:text-primary transition duration-500 ease-in-out"
                                         style={{
@@ -92,6 +97,8 @@ const LoginPage = observer(() => {
                                             border: 'none',
                                             background: 'none',
                                         }}
+                                        type='button'
+                                        onClick={() => setShowCreateAccountModal(true)}
                                     >Create Account</button>
                                 </div>
 
@@ -109,11 +116,10 @@ const LoginPage = observer(() => {
                                     </button>
                                 </div>
                                 {error &&
-                                    <div className='absolute bottom-0 left-1/2 translate-x-[-50%] translate-y-[-50%]'>
+                                    <div className='absolute sm:bottom-0 bottom-[-5%] left-1/2 translate-x-[-50%] translate-y-[-50%]'>
                                         <p
                                             style={{
                                                 textShadow: '2px 0 2px rgba(0, 0, 0, 0.7), 0 0 100px rgba(255, 255, 255, 0.8)',
-
                                             }}
                                             className='text-red-500 '>{error}</p>
                                     </div>
@@ -123,6 +129,8 @@ const LoginPage = observer(() => {
                     </div>
                 </div>
             </div>
+            <CreateAccountModal isOpen={showCreateAccountModal} onClose={() => setShowCreateAccountModal(false)} />
+            <ForgotPasswordModal isOpen={showForgotPasswordModal} onClose={() => setShowForgotPasswordModal(false)} />
         </section >
     );
 });

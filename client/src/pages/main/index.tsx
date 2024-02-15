@@ -109,7 +109,7 @@ const MainPage = () => {
                         Reset
                     </button>
                 </div>
-
+                    
             </div>
         </div >
 
