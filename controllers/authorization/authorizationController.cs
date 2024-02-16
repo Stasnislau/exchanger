@@ -92,4 +92,29 @@ public class AuthorizationController : ControllerBase
             throw;
         }
     }
+
+    [HttpPost("forgot")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO dto)
+    {
+        try
+        {
+            var response = await _AuthorizationService.ForgotPassword(dto.email, dto.username, dto.newPassword);
+            var responseMessage = response ?
+                new
+                {
+                    message = "Password reset",
+                    success = true
+                } :
+                new
+                {
+                    message = "Password not reset",
+                    success = false
+                };
+            return Ok(responseMessage);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

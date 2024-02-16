@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useClickOutside from '../../hooks/useClickOutside';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Context } from '../../main';
 
 
 interface loginModalInterface {
@@ -10,11 +11,11 @@ interface loginModalInterface {
 
 const ForgotPasswordModal = ({
     isOpen, onClose }: loginModalInterface) => {
+    const store = React.useContext(Context);
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [error, setError] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
     const ref = React.useRef<HTMLDivElement>(null);
     useClickOutside(ref, () => onClose());
     const close = () => {
@@ -30,32 +31,47 @@ const ForgotPasswordModal = ({
             setError('Username is required');
             return;
         }
+        if (email === '') {
+            setError('Email is required');
+            return;
+        }
+        else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                setError('Invalid email format');
+                return;
+            }
+        }
         if (password === '') {
             setError('Password is required');
             return;
         }
+
         onSubmit();
     }
     const onSubmit = async () => {
-        setLoading(true);
         try {
-            const res = await fetch('/api/auth/forgot', {
+            store.isLoading = true;
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/authorization/forgot`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, email, password })
+                body: JSON.stringify({
+                    username, email,
+                    newPassword: password
+                })
             });
             const data = await res.json();
-            if (data.error) {
-                setError(data.error);
-                setLoading(false);
+            if (data.Success === false) {
+                setError(data.Message);
                 return;
             }
             close();
         } catch (error) {
             setError('An error occurred');
-            setLoading(false);
+        } finally {
+            store.isLoading = false;
         }
     }
     return (

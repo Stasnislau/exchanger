@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import useClickOutside from '../../hooks/useClickOutside';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { Context } from '../../main';
 
 const CreateAccountModal = ({ isOpen, onClose }: {
     isOpen: boolean;
     onClose: () => void;
 
 }) => {
+    const store = React.useContext(Context);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
@@ -51,6 +53,7 @@ const CreateAccountModal = ({ isOpen, onClose }: {
     }
     const onSubmit = async () => {
         try {
+            store.isLoading = true;
             const res = await fetch(`${import.meta.env.VITE_API_URL}/authorization/register`, {
                 method: 'POST',
                 headers: {
@@ -65,7 +68,9 @@ const CreateAccountModal = ({ isOpen, onClose }: {
             }
             close();
         } catch (err: any) {
-            setError(err.message as string);
+            setError('An error occurred');
+        } finally {
+            store.isLoading = false;
         }
     }
     return (

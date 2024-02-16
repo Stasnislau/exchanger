@@ -202,5 +202,22 @@ public class AuthorizationService
             token = token,
         };
     }
+    
+    public async Task<bool> ForgotPassword(string email, string username, string newPassword)
+    {
+        var user = await _context.Users.Where(x => x.Email == email && x.Username == username).FirstOrDefaultAsync();
+        if (user == null)
+        {
+            throw new CustomBadRequest("User not found");
+        }
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        _context.Users.Update(user);
+        int result = await _context.SaveChangesAsync();
+        if (result == 0)
+        {
+            throw new CustomException("Could not save new password", 500);
+        }
+        return true;
+    }
 
 };
