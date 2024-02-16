@@ -28,6 +28,12 @@ const CreateAccountModal = ({ isOpen, onClose }: {
         if (email === '') {
             setError('Email is required');
             return;
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                setError('Invalid email format');
+                return;
+            }
         }
         if (password !== repeatPassword) {
             setError('Passwords do not match');
@@ -45,7 +51,7 @@ const CreateAccountModal = ({ isOpen, onClose }: {
     }
     const onSubmit = async () => {
         try {
-            const res = await fetch('/api/auth/register', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/authorization/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,8 +59,8 @@ const CreateAccountModal = ({ isOpen, onClose }: {
                 body: JSON.stringify({ username, email, password })
             });
             const data = await res.json();
-            if (data.error) {
-                setError(data.error);
+            if (data.Success === false) {
+                setError(data.Message);
                 return;
             }
             close();
