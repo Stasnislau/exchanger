@@ -5,36 +5,54 @@ import RightCard from "../../components/cards/rightCard";
 import Input from "../../components/mui/input";
 import LeftCard from "../../components/cards/leftCard";
 import SwapIcon from "../../assets/icons/swap.svg";
+import { IRate } from "../../types";
+import updateIcon from "../../assets/icons/update.svg";
 
 const MainPage = () => {
     const [date, setDate] = useState(new Date());
-    const [mainCurrency, setMainCurrency] = useState("BTC");
+    const [mainCurrency, setMainCurrency] = useState("eur");
     const [mainCurrencyValue, setMainCurrencyValue] = useState(0);
-    const [targetCurrency, setTargetCurrency] = useState("ETH");
+    const [targetCurrency, setTargetCurrency] = useState("usd");
     const [targetCurrencyValue, setTargetCurrencyValue] = useState(0);
     const [isSwapped, setIsSwapped] = useState(false);
+    const [historicalData, setHistoricalData] = useState<IRate[]>([]);
+    const [currentRate, setCurrentRate] = useState<IRate | undefined>(undefined);
+
+    const fetchHistoricalData = async () => {
+        // fetch historical data
+    }
 
     return (
         <div className="w-full h-screen flex flex-col">
             <Header />
             <div className="justify-center grow items-center md:mt-4 xl:mx-40 md:mx-20 sm:mx-10 mx-2 flex flex-col">
+
                 <p className="lg:text-5xl md:text-3xl text-xl text-center">Currency Exchange</p>
-                <div className="flex justify-start items-center p-2 md:mt-8 mt-4 sm:w-4/5 w-[95%] rounded-full bg-[#f5f4de] border-white border-[2px] "
+                <div className="flex justify-between items-center md:px-4 py-2 px-2 md:mt-8 mt-4 sm:w-4/5 w-[95%] rounded-full bg-[#f5f4de] border-white border-[2px] "
                     style={{
                         boxShadow: "0px 1px 10px rgb(0, 31, 144), 0px 2px 1px rgba(248, 253, 252, 0.5)",
                     }}
                 >
-                    <p className="text-md text-black sm:mx-4 mx-2">
-                        {date.toLocaleString()}
-                    </p>
+                    {currentRate ?
+                        null
+                        : <>
+                            <p className="text-md text-black sm:mx-4 mx-2">
+                                {date.toLocaleString()}
+                            </p>
+                            <button className="  hover:saturate-200 transition duration-300 ease-in-out"
+                                onClick={fetchHistoricalData}
+                            >
+                                <img src={updateIcon} alt="update" className="h-6" />
+                            </button>
+                        </>}
                 </div>
                 <div className="flex flex-row w-full flex-wrap lg:flex-nowrap text-black justify-between">
-                    <LeftCard availableCurrencies={availableCurrencies} setMainCurrency={setMainCurrency} value={1000} />
-                    <RightCard availableCurrencies={availableCurrencies} setTargetCurrency={setTargetCurrency} value={1000} />
+                    <LeftCard availableCurrencies={availableCurrencies} setMainCurrency={setMainCurrency} value={1000} mainCurrency={mainCurrency} />
+                    <RightCard availableCurrencies={availableCurrencies} setTargetCurrency={setTargetCurrency} value={1000} targetCurrency={targetCurrency} />
                 </div>
                 <div className="flex flex-row items-center mt-8 w-full md:h-10 h-6"
                 >
-                    <div className="w-2/5 bg-[#f1f2e0] text-black flex flex-row justify-center sm:py-2 py-0"
+                    <div className="w-2/5 bg-[#f1f2e0] text-black flex flex-row justify-end"
                         style={{
                             borderTopLeftRadius: "999px",
                             borderBottomLeftRadius: "999px",
@@ -43,9 +61,10 @@ const MainPage = () => {
                         }}
                     >
                         <Input
-                            Label={mainCurrency}
+                            Label={mainCurrency.toLocaleUpperCase()}
                             Value={mainCurrencyValue}
                             onChange={(e: any) => setMainCurrencyValue(e.target.value)}
+                            isReversed={true}
                         />
                     </div>
                     <div className="w-1/5 bg-gradient-to-b  border-red-800 from-[#b5c7c5] to-[#a7c2ce] text-black flex flex-row justify-center 
@@ -59,25 +78,28 @@ const MainPage = () => {
                             }
                         }
                     >
-                        <button className="w-full sm:py-2 py-0 flex justify-center items-center">
+                        <button className="w-full py-2 flex justify-center items-center">
                             <img src={SwapIcon} alt="swap" className={`h-10 ${isSwapped ? "scale-110" : ""} transition 
                             ${isSwapped ? "rotate-180" : "rotate-0"}
                             duration-300 ease-in-out transform`} />
                         </button>
                     </div>
-                    <div className="w-2/5 sm:py-2 py-0 bg-[#f1f2e0] text-black flex flex-row justify-center"
+                    <div className="w-2/5 bg-[#f1f2e0] text-black flex flex-row justify-start"
                         style={{
                             borderTopRightRadius: "999px",
                             borderBottomRightRadius: "999px",
                             boxShadow: "0px 1px 10px rgb(0, 31, 144), 0px 2px 1px rgba(248, 253, 252, 0.5)",
                             zIndex: 1
+
                         }}
                     >
-                        <Input
-                            Label={targetCurrency}
-                            Value={targetCurrencyValue}
-                            onChange={(e: any) => setTargetCurrencyValue(e.target.value)}
-                        />
+                        <div className="flex flex-row justify-end w-full">
+                            <Input
+                                Label={targetCurrency.toLocaleUpperCase()}
+                                Value={targetCurrencyValue}
+                                onChange={(e: any) => setTargetCurrencyValue(e.target.value)}
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -109,7 +131,7 @@ const MainPage = () => {
                         Reset
                     </button>
                 </div>
-                    
+
             </div>
         </div >
 

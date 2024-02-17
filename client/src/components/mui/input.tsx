@@ -1,87 +1,54 @@
-import * as React from 'react';
-import { Box, styled } from '@mui/system';
-import { Input as BaseInput, InputProps, inputClasses } from '@mui/base/Input';
+import React from 'react';
 
-const Input = React.forwardRef(function CustomInput(
-    props: InputProps,
-    ref: React.ForwardedRef<HTMLDivElement>,
-) {
-    const { slots, ...other } = props;
-    return (
-        <BaseInput
-            slots={{
-                root: InputRoot,
-                input: InputElement,
-                ...slots,
-            }}
-            {...other}
-            ref={ref}
-        />
-    );
-});
-
-export default function InputAdornments(
-    { Label, Value, onChange, ...props }: { Label: string; Value: number; onChange: any; }
-) {
-    return (
-        <Box>
-            <Input
-                startAdornment={
-                    <InputAdornment>
-                        {Label}
-                    </InputAdornment>
-                }
-                value={Value}
-                onChange={onChange}
-                {...props}
-            />
-        </Box>
-    );
+interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+    isReversed?: boolean;
+    label?: string;
 }
 
-
-const InputRoot = styled('div')(
-    () => `
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-weight: 400;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-
-  &.${inputClasses.focused} {
-    background: rgba(0, 0, 0, 0.05);
-  }
-
-  &:hover {
-  }
-
-  // firefox
-  &:focus-visible {
-    outline: 0;
-  }
-`,
+const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
+    ({ isReversed, label, ...props }, ref) => (
+        <div
+            className={`flex p-2 relative ${isReversed ? 'flex-row-reverse' : 'flex-row'}`}
+            ref={ref}
+        >
+            {label && (
+                <div className="sm:mx-2 mx-1 flex items-center justify-center text-blue-700 font-bold">
+                    <span>{label}</span>
+                </div>
+            )}
+            <input
+                min={0}
+                type="number"
+                className={`bg-transparent py-2 sm:px-2 border-none outline-none transition-colors duration-300 ease-in-out ${isReversed ? 'text-right' : 'text-left ml-1'}`}
+        {...props}
+            />
+        </div>
+    )
 );
 
-const InputElement = styled('input')(
-    () => `
-  font-size: 0.875rem;
-  font-family: inherit;
-  font-weight: 400;
-  line-height: 1.5;
-  flex-grow: 1;
-  background: inherit;
-  border: none;
-  border-radius: inherit;
-  padding: 8px 12px;
-  outline: 0;
-`,
-);
+CustomInput.displayName = 'CustomInput';
 
-const InputAdornment = styled('div')`
-  margin: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-`;
+// Define props for the InputAdornments component
+interface InputAdornmentsProps {
+    Label: string;
+    Value: number;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    isReversed?: boolean;
+}
+
+// InputAdornments component definition
+const InputAdornments: React.FC<InputAdornmentsProps> = ({ Label, Value, onChange, isReversed = false, ...props }) => {
+    return (
+        <div className="w-full">
+            <CustomInput
+                label={Label}
+                value={Value}
+                onChange={onChange}
+                isReversed={isReversed}
+                {...props}
+            />
+        </div>
+    );
+};
+
+export default InputAdornments;

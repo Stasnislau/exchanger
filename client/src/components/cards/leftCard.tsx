@@ -10,11 +10,12 @@ interface LeftCardProps {
     }[],
     setMainCurrency: any
     value: number
+    mainCurrency: string
 
 }
 
 const LeftCard = ({
-    availableCurrencies, setMainCurrency, value
+    availableCurrencies, setMainCurrency, value, mainCurrency
 }: LeftCardProps) => {
     return (
         <div className="flex flex-col md:mt-8 mt-4 rounded-lg md:py-4 py-2 lg:px-8 sm:px-4 px-2 lg:w-[48%] w-full bg-gradient-to-b from-[#d5e4db] to-[#b0c9c7] border-white border-2"
@@ -44,6 +45,7 @@ const LeftCard = ({
                     maxMenuHeight={150}
                     className="w-[68%] border-none"
                     placeholder="Currency"
+                    value={{ value: mainCurrency, label: availableCurrencies.find((currency) => currency.tag === mainCurrency)?.name }}
                     onChange={(e: any) => setMainCurrency(e.value)}
                     styles={
                         {

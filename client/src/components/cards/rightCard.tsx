@@ -8,12 +8,13 @@ interface RightCardProps {
         name: string;
         tag: string;
     }[],
-    setTargetCurrency: any
-    value: number
+    setTargetCurrency: any,
+    value: number,
+    targetCurrency: string
 }
 
 const RightCard = ({
-    availableCurrencies, setTargetCurrency, value
+    availableCurrencies, setTargetCurrency, value, targetCurrency
 }: RightCardProps) => {
 
     return (
@@ -42,6 +43,7 @@ const RightCard = ({
                     options={availableCurrencies.map((currency) => ({ value: currency.tag, label: currency.name }))}
                     isSearchable
                     maxMenuHeight={150}
+                    value={{ value: targetCurrency, label: availableCurrencies.find((currency) => currency.tag === targetCurrency)?.name }}
                     className="w-[68%] border-none"
                     placeholder="Currency"
                     onChange={(e: any) => setTargetCurrency(e.value)}
