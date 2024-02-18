@@ -11,8 +11,8 @@ interface DrawerProps {
 const Drawer = (props: DrawerProps) => {
     const drawerVariants = {
         open: {
-            width: window.innerWidth > 600 ? window.innerHeight < 1024 ? "15%" : "30%" : "100%",
-            height: "100%", 
+            width: window.innerWidth > 600 ? window.innerHeight < 1024 ? "20%" : "30%" : "100%",
+            height: window.innerWidth < 601 ? "100%" : "auto",
             transition: {
                 type: "spring",
                 stiffness: 300,
@@ -40,33 +40,49 @@ const Drawer = (props: DrawerProps) => {
                     exit="closed"
                     transition={{ duration: 0.2 }}
                     variants={drawerVariants}
+                    style={
+                        {
+                            boxShadow: "0px 0px 5px rgba(36, 93, 176, 0.6), 0px 0px 20px rgba(36, 93, 176, 0.4)",
+                        }
+                    }
                 >
-                    <div className="flex flex-col grow relative bg-white">
-                        <div className="flex justify-end p-4">
+                    <div className="flex flex-col bg-gradient-to-b 
+                    from-[#4174ab] to-[#10407f] w-full h-full text-text relative overflow-y-auto px-2
+                    ">
+
+                        <div className="absolute top-5 right-5 sm:hidden blok">
                             <button
                                 className="p-0 m-0 border-none transition-all duration-300 ease-in-out hover:text-secondary"
                                 onClick={props.onClose}
                             >
                                 X
-                                {/* <img src="/assets/icons/close.svg" alt="close" className="h-6" /> */}
                             </button>
                         </div>
-                        <div className="flex flex-col gap-4 p-4">
-                            <h1 className="text-xl font-bold">History</h1>
-                            <div className="flex flex-col gap-4">
-                                {props.historyItems?.map((item, index) => (
-                                    <div key={index} className="flex flex-col gap-2">
-                                        <div className="flex justify-between">
-                                            <span>{item.baseCurrency}</span>
-                                            <span>{item.targetCurrency}</span>
+                        <h1 className="text-2xl mb-2 font-bold text-center text-white">History</h1>
+                        <div className="flex flex-col gap-4">
+                            {!props.historyItems || props.historyItems.length === 0 ? (
+                                <span className="text-center text-gray-500">No history</span>
+                            ) : (
+                                props.historyItems.map((item, index) => (
+                                    <button key={index} className="flex w-full flex-col gap-2 p-4 bg-white rounded-lg shadow-md text-sm
+                                        hover:bg-gray-200 transition-all duration-300 ease-in-out">
+                                        <div className="flex flex-row justify-between text-gray-700 w-full">
+                                            <p>{item.baseCurrency.toUpperCase()}/{item.targetCurrency.toUpperCase()}</p>
+                                            <p>{item.createdAt.toLocaleDateString()}</p>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span>{item.value}</span>
+                                        <div className="flex flex-row justify-between text-gray-700 w-full">
+                                            <span>Rate: {item.value}</span>
                                             <span>{item.result}</span>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
+                                        {item.amount && item.result && (
+                                            <div className="flex flex-row justify-between text-gray-700 w-full">
+                                                <p>Amount: {item.amount}</p>
+                                                <p>Result: {item.result}</p>
+                                            </div>
+                                        )}
+                                    </button>
+                                ))
+                            )}
                         </div>
                     </div>
                 </motion.div>

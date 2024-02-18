@@ -40,6 +40,93 @@ const mockRates: IRate[] = [
     },
 ];
 
+const mockHistoricalData: IRate[] = [
+    {
+        id: 1,
+        value: 1.12,
+        baseCurrency: "eur",
+        targetCurrency: "usd",
+        createdAt: new Date(),
+    },
+    {
+        id: 2,
+        value: 0.892857143,
+        baseCurrency: "usd",
+        targetCurrency: "eur",
+        createdAt: new Date(),
+    },
+    {
+        id: 3,
+        value: 0.73,
+        baseCurrency: "gbp",
+        targetCurrency: "usd",
+        createdAt: new Date(),
+    },
+    {
+        id: 4,
+        value: 1.36986301,
+        baseCurrency: "usd",
+        targetCurrency: "gbp",
+        createdAt: new Date(),
+    },
+    {
+        id: 5,
+        value: 1.12,
+        baseCurrency: "eur",
+        targetCurrency: "usd",
+        createdAt: new Date(),
+    },
+    {
+        id: 6,
+        value: 0.892857143,
+        baseCurrency: "usd",
+        targetCurrency: "eur",
+        createdAt: new Date(),
+    },
+    {
+        id: 7,
+        value: 0.73,
+        baseCurrency: "gbp",
+        targetCurrency: "usd",
+        createdAt: new Date(),
+    },
+    {
+        id: 8,
+        value: 1.36986301,
+        baseCurrency: "usd",
+        targetCurrency: "gbp",
+        createdAt: new Date(),
+    },
+    {
+        id: 9,
+        value: 1.12,
+        baseCurrency: "eur",
+        targetCurrency: "usd",
+        createdAt: new Date(),
+    },
+    {
+        id: 10,
+        value: 0.892857143,
+        baseCurrency: "usd",
+        targetCurrency: "eur",
+        createdAt: new Date(),
+    },
+    {
+        id: 11,
+        value: 0.73,
+        baseCurrency: "gbp",
+        targetCurrency: "usd",
+        createdAt: new Date(),
+    },
+    {
+        id: 12,
+        value: 1.36986301,
+        baseCurrency: "usd",
+        targetCurrency: "gbp",
+        createdAt: new Date(),
+    },
+];
+
 
 const MainPage = () => {
     const [date, setDate] = useState(new Date());
@@ -48,7 +135,7 @@ const MainPage = () => {
     const [targetCurrency, setTargetCurrency] = useState("usd");
     const [targetCurrencyValue, setTargetCurrencyValue] = useState(0);
     const [isSwapped, setIsSwapped] = useState(false);
-    const [historicalData, setHistoricalData] = useState<IRate[]>([]);
+    const [historicalData, setHistoricalData] = useState<IRate[]>(mockHistoricalData);
     const [currentRate, setCurrentRate] = useState<IRate | undefined>(undefined);
     const [isHistorical, setIsHistorical] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -92,9 +179,9 @@ const MainPage = () => {
     return (
         <div className="w-full h-screen flex flex-col">
             <Header isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen} />
-            <div className="flex-row flex w-full grow">
+            <div className="flex-row flex grow h-full w-full overflow-hidden">
                 <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} historyItems={historicalData} />
-                <div className="justify-center grow items-center md:mt-4 xl:mx-40 md:mx-20 sm:mx-10 mx-2 flex flex-col">
+                <div className={`justify-center grow items-center md:mt-4 xl:${isDrawerOpen ? "mx-20": "mx-40"} md:${isDrawerOpen ? "mx-10": "mx-5"} sm:mx-10 mx-2 flex flex-col`}>
 
                     <p className="lg:text-5xl md:text-3xl text-xl text-center">Currency Exchange</p>
                     <div className="flex justify-between items-center md:px-4 py-2 px-2 md:mt-8 mt-4 sm:w-4/5 w-[95%] rounded-full bg-[#f5f4de] border-white border-[2px] "

@@ -10,7 +10,7 @@ const Header = ({ isDrawerOpen, setIsDrawerOpen }: {
     const store = useContext(Context);
     const navigate = useNavigate();
     return (
-        <header className="bg-gradient-to-b from-[#19d8ff] from-80% inset-0 to-100% mix-blend-screen to-[#08a7f1] md:h-14 h-12 flex"
+        <header className="bg-gradient-to-b z-[100] relative from-[#19d8ff] from-80% to-100% mix-blend-screen to-[#08a7f1] md:h-14 h-12 flex"
             style={
                 {
                     boxShadow: "0px 2px 1px rgb(0, 31, 144), 0px 1px 100px rgba(248, 253, 252, 0.4)",
