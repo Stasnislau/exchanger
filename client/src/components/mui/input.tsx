@@ -19,7 +19,11 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
             <input
                 min={0}
                 type="number"
-                className={`bg-transparent py-2 sm:px-2 border-none outline-none transition-colors duration-300 ease-in-out ${isReversed ? 'text-right' : 'text-left ml-1'}`}
+                style={{
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'textfield',
+                }}
+                className={`bg-transparent py-2 sm:px-2 border-none outline-none transition-colors duration-300 ease-in-out ${isReversed ? 'text-right' : 'text-left ml-1'} appearance-none w-full`}
         {...props}
             />
         </div>
@@ -28,7 +32,6 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
 
 CustomInput.displayName = 'CustomInput';
 
-// Define props for the InputAdornments component
 interface InputAdornmentsProps {
     Label: string;
     Value: number;
