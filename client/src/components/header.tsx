@@ -1,8 +1,12 @@
 import { useContext } from 'react';
 import { Context } from '../main';
 import { useNavigate } from 'react-router-dom';
+import MenuIcon from '../assets/icons/menu.svg';
 
-const Header = () => {
+const Header = ({ isDrawerOpen, setIsDrawerOpen }: {
+    isDrawerOpen: boolean,
+    setIsDrawerOpen: (value: boolean) => void
+}) => {
     const store = useContext(Context);
     const navigate = useNavigate();
     return (
@@ -14,10 +18,12 @@ const Header = () => {
             }
         >
             <div className="container md:mx-8 mx-2 flex grow justify-between items-center ">
-                <div className="flex items-center">
-                    <img src="src/assets/images/euro.png" alt="euro" className="h-10 m-0 rounded-full" style={{
-                    }} />
-                </div>
+                {store.state.isLoggedIn ? <button
+                    className='p-0 m-0 border-none transition-all duration-300 ease-in-out hover:text-secondary'
+                    onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
+                    <img src={MenuIcon} alt="menu" className="h-6" />
+                </button>
+                    : null}
                 <div className="items-center sm:flex hidden">
                     <h1 className="md:text-xl text-md font-bold">Currency Exchange</h1>
                 </div>
@@ -28,10 +34,6 @@ const Header = () => {
                             await store.logout()
                             navigate('/login')
                         }}>Logout</button> : null}
-                    {!store.state.isLoggedIn
-                        ? <button
-                            className='p-0 m-0 border-none transition-all duration-300 ease-in-out hover:text-secondary'
-                            onClick={() => navigate("/login")}>Login</button> : null}
                 </div>
             </div>
         </header>
