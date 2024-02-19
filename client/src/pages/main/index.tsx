@@ -179,11 +179,10 @@ const MainPage = () => {
     return (
         <div className="w-full h-screen flex flex-col">
             <Header isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen} />
-            <div className="flex-row flex grow h-full w-full overflow-hidden">
+            <div className="flex-row flex grow h-full w-full lg:relative overflow-hidden">
                 <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} historyItems={historicalData} />
-                <div className={`justify-center grow items-center md:mt-4 xl:${isDrawerOpen ? "mx-20": "mx-40"} md:${isDrawerOpen ? "mx-10": "mx-5"} sm:mx-10 mx-2 flex flex-col`}>
-
-                    <p className="lg:text-5xl md:text-3xl text-xl text-center">Currency Exchange</p>
+                <div className={`justify-center grow items-center md:mt-4 xl:${isDrawerOpen ? "mx-20" : "mx-40"} md:${isDrawerOpen ? "mx-10" : "mx-5"} sm:mx-10 mx-2 flex flex-col`}>
+                    <p className={`lg:text-5xl md:text-3xl text-xl text-center ${window.innerHeight < 800 ? "hidden" : ""}`}>Currency Exchange</p>
                     <div className="flex justify-between items-center md:px-4 py-2 px-2 md:mt-8 mt-4 sm:w-4/5 w-[95%] rounded-full bg-[#f5f4de] border-white border-[2px] "
                         style={{
                             boxShadow: "0px 1px 10px rgb(0, 31, 144), 0px 2px 1px rgba(248, 253, 252, 0.5)",
@@ -193,7 +192,7 @@ const MainPage = () => {
                             null
                             : <>
                                 <p className="text-md text-black sm:mx-4 mx-2">
-                                    {date.toLocaleString()}
+                                    {date.getDate()}.{date.getMonth() + 1 < 10 ? `${"0" + (date.getMonth() + 1)}` : date.getMonth() + 1}.{date.getFullYear()} {date.getHours()}:{date.getMinutes()}
                                 </p>
                                 <button className="  hover:saturate-200 transition duration-300 ease-in-out"
                                     onClick={getCurrentRate}

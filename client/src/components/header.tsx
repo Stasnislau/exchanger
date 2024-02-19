@@ -10,14 +10,14 @@ const Header = ({ isDrawerOpen, setIsDrawerOpen }: {
     const store = useContext(Context);
     const navigate = useNavigate();
     return (
-        <header className="bg-gradient-to-b z-[100] relative from-[#19d8ff] from-80% to-100% mix-blend-screen to-[#08a7f1] md:h-14 h-12 flex"
+        <header className="bg-gradient-to-b  relative from-[#19d8ff] from-80% to-100% mix-blend-screen to-[#08a7f1] md:h-14 h-12 flex w-full"
             style={
                 {
                     boxShadow: "0px 2px 1px rgb(0, 31, 144), 0px 1px 100px rgba(248, 253, 252, 0.4)",
                 }
             }
         >
-            <div className="container md:mx-8 mx-2 flex grow justify-between items-center ">
+            <div className="md:mx-8 mx-2 flex flex-row w-full justify-between items-center ">
                 {store.state.isLoggedIn ? <button
                     className='p-0 m-0 border-none transition-all duration-300 ease-in-out hover:text-secondary'
                     onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
