@@ -1,15 +1,44 @@
 import { IRate } from "../../types";
 import { motion, AnimatePresence } from "framer-motion";
 import closeIcon from "../../assets/icons/close.svg";
-
-
+import { Context } from "../../main";
+import { useContext } from "react";
+import deleteIcon from "../../assets/icons/delete.svg";
 interface DrawerProps {
     isOpen: boolean;
     onClose: () => void;
     historyItems: IRate[] | undefined;
+    onClick: (index: number) => void;
+    changeHistory: (histroy: IRate[] | undefined) => void;
 }
 
 const Drawer = (props: DrawerProps) => {
+
+    const store = useContext(Context);
+
+    const deleteHistoryItem = async (index: number) => {
+        try {
+            store.isLoading = true;
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/rates/delete/${index}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${localStorage.getItem("authToken")}`
+                    },
+                }
+            );
+            const data = await response.json();
+            if (response.ok && data.success) {
+                props.changeHistory(props.historyItems?.filter((item, i) => i !== index) || undefined);
+            }
+        } catch (error: any) {
+            console.log(error, "error");
+        } finally {
+            store.isLoading = false;
+        }
+    }
     const drawerVariants = {
         open: {
             width: window.innerWidth > 768 ? window.innerWidth < 860 ? "35%" : "20%" : "100%",
@@ -69,10 +98,17 @@ const Drawer = (props: DrawerProps) => {
                                         hover:bg-gray-200 transition-all duration-300 ease-in-out">
                                         <div className="flex flex-row justify-between text-gray-700 w-full">
                                             <p>{item.baseCurrency.toUpperCase()}/{item.targetCurrency.toUpperCase()}</p>
-                                            <p>{item.createdAt.toLocaleDateString()}</p>
-                                        </div>
-                                        <div className="flex flex-row justify-between text-gray-700 w-full">
-                                            <span>Rate: {item.value.toFixed(4)}</span>
+                                            <button
+                                                onClick={() => deleteHistoryItem(index)}
+                                                className="text-red-500"
+                                            >
+                                                <img src={deleteIcon}
+                                                    alt="delete"
+                                                    className="w-4 h-4"
+                                                />
+                                            </button>
+
+
                                         </div>
                                         {item.amount && item.result && (
                                             <div className="flex flex-row justify-between text-gray-700 w-full">
@@ -80,6 +116,11 @@ const Drawer = (props: DrawerProps) => {
                                                 <p>Result: {item.result.toFixed(2)}</p>
                                             </div>
                                         )}
+                                        <div className="flex flex-row justify-between text-gray-700 w-full">
+                                            <span>Rate: {item.value.toFixed(4)}</span>
+                                            <p>{item.createdAt.toLocaleDateString()}</p>
+                                        </div>
+
                                     </button>
                                 ))
                             )}

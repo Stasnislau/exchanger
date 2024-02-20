@@ -135,7 +135,7 @@ const MainPage = () => {
     const [targetCurrency, setTargetCurrency] = useState("usd");
     const [targetCurrencyValue, setTargetCurrencyValue] = useState(0);
     const [isSwapped, setIsSwapped] = useState(false);
-    const [historicalData, setHistoricalData] = useState<IRate[]>(mockHistoricalData);
+    const [historicalData, setHistoricalData] = useState<IRate[] | undefined>(mockHistoricalData);
     const [currentRate, setCurrentRate] = useState<IRate | undefined>(undefined);
     const [isHistorical, setIsHistorical] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -180,7 +180,9 @@ const MainPage = () => {
         <div className="w-full h-screen flex flex-col">
             <Header isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen} />
             <div className="flex-row flex grow h-full w-full lg:relative overflow-hidden">
-                <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} historyItems={historicalData} />
+                <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} historyItems={historicalData} onClick={() => {
+                    console.log("Drawer clicked");
+                }} changeHistory={setHistoricalData} />
                 <div className={`justify-center grow items-center md:mt-4 xl:${isDrawerOpen ? "mx-20" : "mx-40"} md:${isDrawerOpen ? "mx-10" : "mx-5"} sm:mx-10 mx-2 flex flex-col`}>
                     <p className={`lg:text-5xl md:text-3xl text-xl text-center ${window.innerHeight < 800 ? "hidden" : ""}`}>Currency Exchange</p>
                     <div className="flex justify-between items-center md:px-4 py-2 px-2 md:mt-8 mt-4 sm:w-4/5 w-[95%] rounded-full bg-[#f5f4de] border-white border-[2px] "
