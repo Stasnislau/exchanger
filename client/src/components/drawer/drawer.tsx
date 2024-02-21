@@ -2,7 +2,7 @@ import { IRate } from "../../types";
 import { motion, AnimatePresence } from "framer-motion";
 import closeIcon from "../../assets/icons/close.svg";
 import { Context } from "../../main";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import deleteIcon from "../../assets/icons/delete.svg";
 interface DrawerProps {
     isOpen: boolean;
@@ -19,8 +19,9 @@ const Drawer = (props: DrawerProps) => {
     const deleteHistoryItem = async (index: number) => {
         try {
             store.isLoading = true;
+            const params = new URLSearchParams({ index: index.toString() });
             const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/rates/delete/${index}`,
+                `${import.meta.env.VITE_API_URL}/rates/delete?${params}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -94,17 +95,22 @@ const Drawer = (props: DrawerProps) => {
                                 <span className="text-center text-gray-500">No history</span>
                             ) : (
                                 props.historyItems.map((item, index) => (
-                                    <button key={index} className="flex w-full flex-col gap-2 py-4 lg:px-4 md:px-2 sm:px-1 px-6 bg-white rounded-lg shadow-md sm:text-sm text-xl
+                                    <div key={index} className="flex w-full flex-col gap-2 py-4 lg:px-4 md:px-2 sm:px-1 px-6 bg-white rounded-lg shadow-md sm:text-sm text-xl
                                         hover:bg-gray-200 transition-all duration-300 ease-in-out">
                                         <div className="flex flex-row justify-between text-gray-700 w-full">
                                             <p>{item.baseCurrency.toUpperCase()}/{item.targetCurrency.toUpperCase()}</p>
                                             <button
-                                                onClick={() => deleteHistoryItem(index)}
+                                                onClick={(e:
+                                                    React.MouseEvent<HTMLButtonElement>) => {
+                                                    e.preventDefault();
+                                                    deleteHistoryItem(index);
+                                                }
+                                                }
                                                 className="text-red-500"
                                             >
                                                 <img src={deleteIcon}
                                                     alt="delete"
-                                                    className="w-4 h-4"
+                                                    className="w-4 h-4 hover:scale-110 transition-all duration-300 ease-in-out"
                                                 />
                                             </button>
 
@@ -121,16 +127,16 @@ const Drawer = (props: DrawerProps) => {
                                             <p>{item.createdAt.toLocaleDateString()}</p>
                                         </div>
 
-                                    </button>
+                                    </div>
                                 ))
                             )}
                         </div>
                     </div>
-                </motion.div>
+                </motion.div >
             )
             }
 
-        </AnimatePresence>
+        </AnimatePresence >
     );
 }
 
