@@ -130,19 +130,23 @@ const mockHistoricalData: IRate[] = [
 
 const MainPage = () => {
     const [date, setDate] = useState(new Date());
-    const [mainCurrency, setMainCurrency] = useState("eur");
     const [mainCurrencyValue, setMainCurrencyValue] = useState(0);
-    const [targetCurrency, setTargetCurrency] = useState("usd");
     const [targetCurrencyValue, setTargetCurrencyValue] = useState(0);
     const [isSwapped, setIsSwapped] = useState(false);
-    const [historicalData, setHistoricalData] = useState<IRate[] | undefined>(mockHistoricalData);
-    const [currentRate, setCurrentRate] = useState<IRate | undefined>(undefined);
+    const [historicalData, setHistoricalData] = useState<IRate[]>(mockHistoricalData);
+    const [currentRate, setCurrentRate] = useState<IRate>({
+        id: -1,
+        value: 1.12,
+        baseCurrency: "eur",
+        targetCurrency: "usd",
+        createdAt: new Date(),
+    });
     const [isHistorical, setIsHistorical] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const getCurrentRate = async () => {
         mockRates.forEach((rate) => {
-            if (rate.baseCurrency === mainCurrency && rate.targetCurrency === targetCurrency) {
+            if (rate.baseCurrency === currentRate?.baseCurrency && rate.targetCurrency === currentRate.targetCurrency) {
                 setCurrentRate(rate);
             }
         });
@@ -158,15 +162,17 @@ const MainPage = () => {
 
     useEffect(() => {
         getCurrentRate();
-    }, [mainCurrency, targetCurrency]);
+    }, [currentRate.baseCurrency, currentRate.targetCurrency]);
 
 
     const handleSwapCurrencies = () => {
-        const temp = mainCurrency;
-        setMainCurrency(targetCurrency);
-        setTargetCurrency(temp);
-        setMainCurrencyValue(targetCurrencyValue);
-        setTargetCurrencyValue(mainCurrencyValue);
+        setCurrentRate({
+            ...currentRate,
+            baseCurrency: currentRate.targetCurrency,
+            targetCurrency: currentRate.baseCurrency,
+            value: currentRate.value,
+            result: currentRate.result,
+        });
         setIsHistorical(false);
     };
 
@@ -180,8 +186,9 @@ const MainPage = () => {
         <div className="w-full h-screen flex flex-col">
             <Header isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen} />
             <div className="flex-row flex grow h-full w-full lg:relative overflow-hidden">
-                <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} historyItems={historicalData} onClick={() => {
-                    console.log("Drawer clicked");
+                <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} historyItems={historicalData} onClick={(id: number) => {
+                    setCurrentRate(historicalData ? historicalData.find((item) => item.id === id) || {} as IRate : {} as IRate);
+                    setIsHistorical(true);
                 }} changeHistory={setHistoricalData} />
                 <div className={`justify-center grow items-center md:mt-4 xl:${isDrawerOpen ? "mx-20" : "mx-40"} md:${isDrawerOpen ? "mx-10" : "mx-5"} sm:mx-10 mx-2 flex flex-col`}>
                     <p className={`lg:text-5xl md:text-3xl text-xl text-center ${window.innerHeight < 800 ? "hidden" : ""}`}>Currency Exchange</p>
@@ -204,8 +211,26 @@ const MainPage = () => {
                             </>}
                     </div>
                     <div className="flex flex-row w-full flex-wrap md:flex-nowrap text-black justify-between">
-                        <LeftCard availableCurrencies={availableCurrencies} setMainCurrency={setMainCurrency} value={currentRate ? currentRate.value : 0} mainCurrency={mainCurrency} />
-                        <RightCard availableCurrencies={availableCurrencies} setTargetCurrency={setTargetCurrency} value={currentRate ? currentRate.value : 0} targetCurrency={targetCurrency} />
+                        <LeftCard availableCurrencies={availableCurrencies} setMainCurrency={
+                            (currency: string) => {
+                                setCurrentRate({
+                                    ...currentRate,
+                                    baseCurrency: currency,
+                                });
+                                setIsHistorical(false);
+                            }
+                        } value={currentRate ? currentRate.value : 0} mainCurrency={
+                            currentRate.baseCurrency
+                        } />
+                        <RightCard availableCurrencies={availableCurrencies} setTargetCurrency={
+                            (currency: string) => {
+                                setCurrentRate({
+                                    ...currentRate,
+                                    targetCurrency: currency,
+                                });
+                                setIsHistorical(false);
+                            }
+                        } value={currentRate ? currentRate.value : 0} targetCurrency={currentRate.targetCurrency} />
                     </div>
                     <div className="flex flex-row items-center mt-8 w-full md:h-10 h-6"
                     >
@@ -218,7 +243,7 @@ const MainPage = () => {
                             }}
                         >
                             <Input
-                                Label={mainCurrency.toLocaleUpperCase()}
+                                Label={currentRate.baseCurrency.toLocaleUpperCase()}
                                 Value={mainCurrencyValue}
                                 onChange={(e: any) => {
                                     setMainCurrencyValue(e.target.value)
@@ -259,7 +284,7 @@ const MainPage = () => {
                         >
                             <div className="flex flex-row justify-end w-full">
                                 <Input
-                                    Label={targetCurrency.toLocaleUpperCase()}
+                                    Label={currentRate.targetCurrency.toLocaleUpperCase()}
                                     Value={targetCurrencyValue}
                                     onChange={(e: any) => {
                                         setTargetCurrencyValue(e.target.value)

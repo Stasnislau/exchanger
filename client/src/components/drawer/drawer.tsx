@@ -9,7 +9,7 @@ interface DrawerProps {
     onClose: () => void;
     historyItems: IRate[] | undefined;
     onClick: (index: number) => void;
-    changeHistory: (histroy: IRate[] | undefined) => void;
+    changeHistory: (histroy: IRate[]) => void;
 }
 
 const Drawer = (props: DrawerProps) => {
@@ -32,7 +32,7 @@ const Drawer = (props: DrawerProps) => {
             );
             const data = await response.json();
             if (response.ok && data.success) {
-                props.changeHistory(props.historyItems?.filter((item, i) => i !== index) || undefined);
+                props.changeHistory(props.historyItems?.filter((item, i) => i !== index) || []);
             }
         } catch (error: any) {
             console.log(error, "error");
@@ -96,7 +96,9 @@ const Drawer = (props: DrawerProps) => {
                             ) : (
                                 props.historyItems.map((item, index) => (
                                     <div key={index} className="flex w-full flex-col gap-2 py-4 lg:px-4 md:px-2 sm:px-1 px-6 bg-white rounded-lg shadow-md sm:text-sm text-xl
-                                        hover:bg-gray-200 transition-all duration-300 ease-in-out">
+                                        hover:bg-gray-200 transition-all duration-300 ease-in-out"
+                                        onClick={() => props.onClick(item.id)}
+                                    >
                                         <div className="flex flex-row justify-between text-gray-700 w-full">
                                             <p>{item.baseCurrency.toUpperCase()}/{item.targetCurrency.toUpperCase()}</p>
                                             <button
