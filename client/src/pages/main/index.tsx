@@ -9,6 +9,7 @@ import { IRate } from "../../types";
 import updateIcon from "../../assets/icons/update.svg";
 import Drawer from "../../components/drawer/drawer";
 import moment from "moment";
+import { set } from "mobx";
 
 const mockRates: IRate[] = [
     {
@@ -130,8 +131,6 @@ const mockHistoricalData: IRate[] = [
 
 
 const MainPage = () => {
-    const [mainCurrencyValue, setMainCurrencyValue] = useState(0);
-    const [targetCurrencyValue, setTargetCurrencyValue] = useState(0);
     const [isSwapped, setIsSwapped] = useState(false);
     const [historicalData, setHistoricalData] = useState<IRate[]>(mockHistoricalData);
     const [currentRate, setCurrentRate] = useState<IRate>({
@@ -143,6 +142,10 @@ const MainPage = () => {
     });
     const [isHistorical, setIsHistorical] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [leftRate, setLeftRate] = useState(0);
+    const [rightRate, setRightRate] = useState(0);
+    const [defaultRateValue, setDefaultRateValue] = useState<number>(0);
+
 
     const getCurrentRate = async () => {
         mockRates.forEach((rate) => {
@@ -154,20 +157,47 @@ const MainPage = () => {
 
     const convertCurrency = () => {
         if (currentRate) {
-            const result = mainCurrencyValue * currentRate.value;
+            const result = (currentRate?.amount || 0) * currentRate.value;
             const finalResult = Number(result.toFixed(2));
-            setTargetCurrencyValue(finalResult);
+            setCurrentRate({
+                ...currentRate,
+                result: finalResult,
+            });
         }
     };
 
     const handleLeftCustomRate = (value: number) => {
+        if (value === 0) {
+            setCurrentRate({
+                ...currentRate,
+                value: defaultRateValue,
+            });
+        }
+        else {
+            setDefaultRateValue(currentRate.value);
+        }
+        setLeftRate(value);
+        setRightRate(0);
         setCurrentRate({
             ...currentRate,
             value,
         });
+        setIsHistorical(false);
+
     };
 
-    const handleRightCustomRate = (value: number) => { // add link between left and right card to change the value of the other card
+    const handleRightCustomRate = (value: number) => {
+        if (value === 0) {
+            setCurrentRate({
+                ...currentRate,
+                value: defaultRateValue,
+            });
+        }
+        else {
+            setDefaultRateValue(currentRate.value);
+        }
+        setRightRate(value);
+        setLeftRate(0);
         setCurrentRate({
             ...currentRate,
             value: 1 / value,
@@ -175,18 +205,20 @@ const MainPage = () => {
     };
 
     useEffect(() => {
-        if (!isHistorical)
+        console.log("Current rate changed", currentRate);
+        if (!isHistorical && leftRate === 0 && rightRate === 0)
             getCurrentRate();
-    }, [currentRate.baseCurrency, currentRate.targetCurrency, currentRate.value]);
+    }, [currentRate.baseCurrency, currentRate.targetCurrency]);
 
 
     const handleSwapCurrencies = () => {
+
         setCurrentRate({
             ...currentRate,
             baseCurrency: currentRate.targetCurrency,
             targetCurrency: currentRate.baseCurrency,
-            value: currentRate.value,
-            result: currentRate.result,
+            amount: currentRate.result,
+            result: currentRate.amount,
         });
         setIsHistorical(false);
     };
@@ -199,6 +231,9 @@ const MainPage = () => {
             targetCurrency: "usd",
             createdAt: new Date(),
         });
+        setIsHistorical(false);
+        setLeftRate(0);
+        setRightRate(0);
     };
 
 
@@ -210,7 +245,7 @@ const MainPage = () => {
                     setCurrentRate(historicalData ? historicalData.find((item) => item.id === id) || {} as IRate : {} as IRate);
                     setIsHistorical(true);
                 }} changeHistory={setHistoricalData} />
-                <div className={`justify-center grow items-center md:mt-4 xl:${isDrawerOpen ? "mx-20" : "mx-40"} md:${isDrawerOpen ? "mx-10" : "mx-5"} sm:mx-10 mx-2 flex flex-col`}>
+                <div className={`justify-center grow items-center 2xl:mx-60 md:mt-4 xl:${isDrawerOpen ? "mx-20" : "mx-40"} md:${isDrawerOpen ? "mx-10" : "mx-5"} sm:mx-10 mx-2 flex flex-col`}>
                     <p className={`lg:text-5xl md:text-3xl text-xl text-center ${window.innerHeight < 800 ? "hidden" : ""}`}>Currency Exchange</p>
                     <div className="flex justify-between items-center md:px-4 py-2 px-2 md:mt-8 mt-4 sm:w-4/5 w-[95%] rounded-full bg-[#f5f4de] border-white border-[2px] "
                         style={{
@@ -241,7 +276,10 @@ const MainPage = () => {
                             }
                         } value={currentRate ? currentRate.value : 0} mainCurrency={
                             currentRate.baseCurrency
-                        } />
+                        }
+                            customRate={leftRate}
+                            onCustomRateChange={handleLeftCustomRate}
+                        />
                         <RightCard availableCurrencies={availableCurrencies} setTargetCurrency={
                             (currency: string) => {
                                 setCurrentRate({
@@ -250,7 +288,10 @@ const MainPage = () => {
                                 });
                                 setIsHistorical(false);
                             }
-                        } value={currentRate ? currentRate.value : 0} targetCurrency={currentRate.targetCurrency} />
+                        } value={currentRate ? currentRate.value : 0} targetCurrency={currentRate.targetCurrency}
+                            onCustomRateChange={handleRightCustomRate}
+                            customRate={rightRate}
+                        />
                     </div>
                     <div className="flex flex-row items-center mt-8 w-full md:h-10 h-6"
                     >
@@ -264,11 +305,13 @@ const MainPage = () => {
                         >
                             <Input
                                 Label={currentRate.baseCurrency.toLocaleUpperCase()}
-                                Value={mainCurrencyValue}
+                                Value={currentRate.amount || 0}
                                 onChange={(e: any) => {
-                                    setMainCurrencyValue(e.target.value)
+                                    setCurrentRate({
+                                        ...currentRate,
+                                        amount: e.target.value
+                                    });
                                     setIsHistorical(false);
-                                    setTargetCurrencyValue(0);
                                 }
                                 }
                                 isReversed={true}
@@ -305,11 +348,13 @@ const MainPage = () => {
                             <div className="flex flex-row justify-end w-full">
                                 <Input
                                     Label={currentRate.targetCurrency.toLocaleUpperCase()}
-                                    Value={targetCurrencyValue}
+                                    Value={currentRate.result || 0}
                                     onChange={(e: any) => {
-                                        setTargetCurrencyValue(e.target.value)
+                                        setCurrentRate({
+                                            ...currentRate,
+                                            result: e.target.value
+                                        });
                                         setIsHistorical(false);
-                                        setMainCurrencyValue(0);
                                     }}
                                 />
                             </div>

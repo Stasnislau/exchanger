@@ -1,4 +1,3 @@
-
 import Select from "react-select";
 import giveIcon from "../../assets/icons/give.svg";
 import rightArrow from "../../assets/icons/right-arrow.svg";
@@ -11,11 +10,12 @@ interface LeftCardProps {
     setMainCurrency: any
     value: number
     mainCurrency: string
-
+    customRate: number
+    onCustomRateChange: (value: number) => void,
 }
 
 const LeftCard = ({
-    availableCurrencies, setMainCurrency, value, mainCurrency
+    availableCurrencies, setMainCurrency, value, mainCurrency, customRate, onCustomRateChange
 }: LeftCardProps) => {
     return (
         <div className="flex flex-col md:mt-8 mt-4 rounded-lg md:py-4 py-2 lg:px-6 sm:px-4 px-2 md:w-[48%] w-full bg-gradient-to-b from-[#d5e4db] to-[#b0c9c7] border-white border-2"
@@ -33,7 +33,7 @@ const LeftCard = ({
                         boxShadow: "0px 0px 4px rgb(123, 150, 156), 0px -2px 2px rgb(33, 139, 186), 0px -6px 2px rgb(225, 255, 255), 0px 6px 2px rgb(0, 5, 24)",
                         textShadow: "2px 1px 0px rgb(0, 5, 24)"
                     }}>
-                    {1 / value < 1 ? (1 / value).toFixed(4) : (1 / value).toFixed(2)}
+                    {isNaN(value) ? "invalid" : value < 1 ? (value).toFixed(4) : (value).toFixed(2)}
                     <img src={rightArrow} alt="left" className="md:w-10 md:h-10 sm:w-8 sm:h-8 w-6 h-6 inline sm:ml-4 ml-2" />
                 </div>
 
@@ -130,7 +130,8 @@ const LeftCard = ({
                     className="w-[28%] rounded-full bg-[#f2f0df] py-2 md:px-4 px-2 text-black text-sm border-[#001b44] sm:border-2 border-[1px] focus:outline-none"
                     min="0"
                     placeholder="Rate"
-                    disabled
+                    value={customRate}
+                    onChange={(e) => onCustomRateChange(parseFloat(e.target.value))}
                 />
             </div>
         </div>

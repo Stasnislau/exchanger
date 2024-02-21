@@ -11,10 +11,12 @@ interface RightCardProps {
     setTargetCurrency: any,
     value: number,
     targetCurrency: string
+    customRate: number
+    onCustomRateChange: (value: number) => void,
 }
 
 const RightCard = ({
-    availableCurrencies, setTargetCurrency, value, targetCurrency
+    availableCurrencies, setTargetCurrency, value, targetCurrency, customRate, onCustomRateChange
 }: RightCardProps) => {
 
     return (
@@ -33,7 +35,7 @@ const RightCard = ({
                         textShadow: "2px 1px 0px rgb(0, 5, 24)"
                     }}>
                     <img src={leftArrow} alt="left" className="md:w-10 md:h-10 sm:w-8 sm:h-8 w-6 h-6 inline sm:mr-4 mr-2" />
-                    {value < 1 ? (value).toFixed(4) : (value).toFixed(2)}
+                    {isNaN(value) ? "invalid":  1 / value < 1 ? (1 / value).toFixed(4) : (1 / value).toFixed(2)}
                 </div>
                 <img src={receiveIcon} alt="give" className="lg:w-32 lg:h-32 sm:w-20 sm:h-20 w-12 h-12 mr-3 sm:mr-0" />
 
@@ -130,7 +132,8 @@ const RightCard = ({
                     className="w-[28%] rounded-full bg-[#f2f0df] py-2 md:px-4 px-2 text-black text-sm border-[#001b44] sm:border-2 border-[1px] focus:outline-none"
                     min="0"
                     placeholder="Rate"
-                    disabled
+                    value={customRate}
+                    onChange={(e) => onCustomRateChange(parseFloat(e.target.value))}
                 />
             </div>
         </div>
