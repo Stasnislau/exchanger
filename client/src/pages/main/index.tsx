@@ -8,6 +8,7 @@ import SwapIcon from "../../assets/icons/swap.svg";
 import { IRate } from "../../types";
 import updateIcon from "../../assets/icons/update.svg";
 import Drawer from "../../components/drawer/drawer";
+import moment from "moment";
 
 const mockRates: IRate[] = [
     {
@@ -53,7 +54,7 @@ const mockHistoricalData: IRate[] = [
         value: 0.892857143,
         baseCurrency: "usd",
         targetCurrency: "eur",
-        createdAt: new Date(),
+        createdAt: new Date(2021, 10, 10, 10, 10, 10),
     },
     {
         id: 3,
@@ -129,14 +130,13 @@ const mockHistoricalData: IRate[] = [
 
 
 const MainPage = () => {
-    const [date, setDate] = useState(new Date());
     const [mainCurrencyValue, setMainCurrencyValue] = useState(0);
     const [targetCurrencyValue, setTargetCurrencyValue] = useState(0);
     const [isSwapped, setIsSwapped] = useState(false);
     const [historicalData, setHistoricalData] = useState<IRate[]>(mockHistoricalData);
     const [currentRate, setCurrentRate] = useState<IRate>({
         id: -1,
-        value: 1.12,
+        value: 0,
         baseCurrency: "eur",
         targetCurrency: "usd",
         createdAt: new Date(),
@@ -160,9 +160,24 @@ const MainPage = () => {
         }
     };
 
+    const handleLeftCustomRate = (value: number) => {
+        setCurrentRate({
+            ...currentRate,
+            value,
+        });
+    };
+
+    const handleRightCustomRate = (value: number) => { // add link between left and right card to change the value of the other card
+        setCurrentRate({
+            ...currentRate,
+            value: 1 / value,
+        });
+    };
+
     useEffect(() => {
-        getCurrentRate();
-    }, [currentRate.baseCurrency, currentRate.targetCurrency]);
+        if (!isHistorical)
+            getCurrentRate();
+    }, [currentRate.baseCurrency, currentRate.targetCurrency, currentRate.value]);
 
 
     const handleSwapCurrencies = () => {
@@ -177,10 +192,15 @@ const MainPage = () => {
     };
 
     const handleReset = () => {
-        setMainCurrencyValue(0);
-        setTargetCurrencyValue(0);
-        setIsHistorical(false);
+        setCurrentRate({
+            id: -1,
+            value: 0,
+            baseCurrency: "eur",
+            targetCurrency: "usd",
+            createdAt: new Date(),
+        });
     };
+
 
     return (
         <div className="w-full h-screen flex flex-col">
@@ -197,11 +217,11 @@ const MainPage = () => {
                             boxShadow: "0px 1px 10px rgb(0, 31, 144), 0px 2px 1px rgba(248, 253, 252, 0.5)",
                         }}
                     >
-                        {currentRate && isHistorical ?
-                            null
-                            : <>
+                        {
+
+                            <>
                                 <p className="text-md text-black sm:mx-4 mx-2">
-                                    {date.getDate()}.{date.getMonth() + 1 < 10 ? `${"0" + (date.getMonth() + 1)}` : date.getMonth() + 1}.{date.getFullYear()} {date.getHours()}:{date.getMinutes()}
+                                    {isHistorical ? moment(currentRate.createdAt).format("DD.MM.YYYY HH:mm") : moment(Date.now()).format("DD.MM.YYYY HH:mm")}
                                 </p>
                                 <button className="  hover:saturate-200 transition duration-300 ease-in-out"
                                     onClick={getCurrentRate}

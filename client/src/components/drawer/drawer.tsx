@@ -95,11 +95,11 @@ const Drawer = (props: DrawerProps) => {
                                 <span className="text-center text-gray-500">No history</span>
                             ) : (
                                 props.historyItems.map((item, index) => (
-                                    <div key={index} className="flex w-full flex-col gap-2 py-4 lg:px-4 md:px-2 sm:px-1 px-6 bg-white rounded-lg shadow-md sm:text-sm text-xl
+                                    <div key={index} className="flex w-full flex-col gap-2 py-4 lg:px-4 md:px-2 sm:px-1 px-6 bg-white rounded-lg shadow-md sm:text-sm text-xl cursor-pointer
                                         hover:bg-gray-200 transition-all duration-300 ease-in-out"
                                         onClick={() => props.onClick(item.id)}
                                     >
-                                        <div className="flex flex-row justify-between text-gray-700 w-full">
+                                        <div className="flex flex-row justify-between text-gray-700 w-full ">
                                             <p>{item.baseCurrency.toUpperCase()}/{item.targetCurrency.toUpperCase()}</p>
                                             <button
                                                 onClick={(e:
