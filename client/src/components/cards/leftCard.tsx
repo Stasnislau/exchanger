@@ -17,7 +17,6 @@ interface LeftCardProps {
 const LeftCard = ({
     availableCurrencies, setMainCurrency, value, mainCurrency, customRate, onCustomRateChange
 }: LeftCardProps) => {
-    console.log(value, "value")
     return (
         <div className="flex flex-col md:mt-8 mt-4 rounded-lg md:py-4 py-2 lg:px-6 sm:px-4 px-2 md:w-[48%] w-full bg-gradient-to-b from-[#d5e4db] to-[#b0c9c7] border-white border-2"
             style={{

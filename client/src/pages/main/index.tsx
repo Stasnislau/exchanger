@@ -113,7 +113,6 @@ const MainPage = () => {
     };
 
     useEffect(() => {
-        console.log("Current rate changed", currentRate);
         if (!isHistorical && leftRate === 0 && rightRate === 0)
             getCurrentRate();
     }, [currentRate.baseCurrency, currentRate.targetCurrency]);
@@ -147,7 +146,7 @@ const MainPage = () => {
     const handleSave = async () => {
         try {
             store.isLoading = true;
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/rates/add`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/rates/save`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -155,8 +154,8 @@ const MainPage = () => {
                 },
                 body: JSON.stringify({
                     value: currentRate.value,
-                    baseCurrency: currentRate.baseCurrency,
-                    targetCurrency: currentRate.targetCurrency,
+                    main: currentRate.baseCurrency,
+                    target: currentRate.targetCurrency,
                     amount: currentRate.amount,
                     result: currentRate.result,
                 }),
@@ -173,8 +172,6 @@ const MainPage = () => {
             store.isLoading = false;
         }
     }
-
-
     return (
         <div className="w-full h-screen flex flex-col">
             <Header isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen} />
@@ -316,8 +313,7 @@ const MainPage = () => {
                                 textShadow: '2px 0 2px rgba(0, 0, 0, 0.7)',
                                 boxShadow: '1px 2px 40px rgb(0, 14, 63), 0 0 20px rgba(36, 93, 176, 0.5), 0 0 40px rgba(255, 255, 255, 0.6)'
                             }}
-                            onClick={handleSave
-                            }
+                            onClick={handleSave}
                         >
                             Save
                         </button>
