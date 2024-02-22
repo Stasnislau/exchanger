@@ -92,7 +92,7 @@ const Drawer = (props: DrawerProps) => {
                         <h1 className="text-2xl my-6 font-bold text-center text-white">History</h1>
                         <div className="flex flex-col gap-4">
                             {!props.historyItems || props.historyItems.length === 0 ? (
-                                <span className="text-center text-gray-500">No history</span>
+                                <span className="text-center">No history yet</span>
                             ) : (
                                 props.historyItems.map((item, index) => (
                                     <div key={index} className="flex w-full flex-col gap-2 py-4 lg:px-4 md:px-2 sm:px-1 px-6 bg-white rounded-lg shadow-md sm:text-sm text-xl cursor-pointer

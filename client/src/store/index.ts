@@ -73,6 +73,7 @@ export default class Store {
         {
           method: "POST",
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
           credentials: "include",
@@ -96,6 +97,7 @@ export default class Store {
         {
           method: "POST",
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
           credentials: "include",

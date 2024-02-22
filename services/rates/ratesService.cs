@@ -45,6 +45,12 @@ public class RatesService
     public async Task<RatesResponse> GetCurrentRate(string main, string target)
     {
         using HttpClient client = new();
+        // return new RatesResponse {
+        //     mainCurrency = main,
+        //     targetCurrency = target,
+        //     rate = 1,
+        //     date = DateTime.UtcNow.ToString()
+        // };
         string? api_key = Environment.GetEnvironmentVariable("CURRENCY_BEACON_API_KEY") ?? throw new Exception("API key not found");
         if (api_key == null)
         {
@@ -60,14 +66,15 @@ public class RatesService
         }
         string url = $"https://api.currencybeacon.com/v1/latest?api_key={api_key}&base={main}";
         HttpResponseMessage response = await client.GetAsync(url);
-        var incoming = new IResponseBody();
-        incoming = JsonConvert.DeserializeObject<IResponseBody>(response.Content.ReadAsStringAsync().Result);
+        string responseBody = await response.Content.ReadAsStringAsync();
+        var incoming = JsonConvert.DeserializeObject<IResponseBody>(responseBody);
         if (incoming.response.Rates.Count == 0)
         {
             throw new Exception("No rates found");
         }
         decimal rate = incoming.response.Rates[target.ToUpper()];
         string date = incoming.response.date;
+        
         return new RatesResponse
         {
             mainCurrency = main,

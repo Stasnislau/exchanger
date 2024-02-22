@@ -9,133 +9,17 @@ import { IRate } from "../../types";
 import updateIcon from "../../assets/icons/update.svg";
 import Drawer from "../../components/drawer/drawer";
 import moment from "moment";
-import { set } from "mobx";
-
-const mockRates: IRate[] = [
-    {
-        id: 1,
-        value: 1.12,
-        baseCurrency: "eur",
-        targetCurrency: "usd",
-        createdAt: new Date(),
-    },
-    {
-        id: 2,
-        value: 0.892857143,
-        baseCurrency: "usd",
-        targetCurrency: "eur",
-        createdAt: new Date(),
-    },
-    {
-        id: 3,
-        value: 0.73,
-        baseCurrency: "gbp",
-        targetCurrency: "usd",
-        createdAt: new Date(),
-    },
-    {
-        id: 4,
-        value: 1.36986301,
-        baseCurrency: "usd",
-        targetCurrency: "gbp",
-        createdAt: new Date(),
-    },
-];
-
-const mockHistoricalData: IRate[] = [
-    {
-        id: 1,
-        value: 1.12,
-        baseCurrency: "eur",
-        targetCurrency: "usd",
-        createdAt: new Date(),
-    },
-    {
-        id: 2,
-        value: 0.892857143,
-        baseCurrency: "usd",
-        targetCurrency: "eur",
-        createdAt: new Date(2021, 10, 10, 10, 10, 10),
-    },
-    {
-        id: 3,
-        value: 0.73,
-        baseCurrency: "gbp",
-        targetCurrency: "usd",
-        createdAt: new Date(),
-    },
-    {
-        id: 4,
-        value: 1.36986301,
-        baseCurrency: "usd",
-        targetCurrency: "gbp",
-        createdAt: new Date(),
-    },
-    {
-        id: 5,
-        value: 1.12,
-        baseCurrency: "eur",
-        targetCurrency: "usd",
-        createdAt: new Date(),
-    },
-    {
-        id: 6,
-        value: 0.892857143,
-        baseCurrency: "usd",
-        targetCurrency: "eur",
-        createdAt: new Date(),
-    },
-    {
-        id: 7,
-        value: 0.73,
-        baseCurrency: "gbp",
-        targetCurrency: "usd",
-        createdAt: new Date(),
-    },
-    {
-        id: 8,
-        value: 1.36986301,
-        baseCurrency: "usd",
-        targetCurrency: "gbp",
-        createdAt: new Date(),
-    },
-    {
-        id: 9,
-        value: 1.12,
-        baseCurrency: "eur",
-        targetCurrency: "usd",
-        createdAt: new Date(),
-    },
-    {
-        id: 10,
-        value: 0.892857143,
-        baseCurrency: "usd",
-        targetCurrency: "eur",
-        createdAt: new Date(),
-    },
-    {
-        id: 11,
-        value: 0.73,
-        baseCurrency: "gbp",
-        targetCurrency: "usd",
-        createdAt: new Date(),
-    },
-    {
-        id: 12,
-        value: 1.36986301,
-        baseCurrency: "usd",
-        targetCurrency: "gbp",
-        createdAt: new Date(),
-    },
-];
+import { Context } from "../../main";
+import React from "react";
 
 
 const MainPage = () => {
+    const store = React.useContext(Context);
     const [isSwapped, setIsSwapped] = useState(false);
-    const [historicalData, setHistoricalData] = useState<IRate[]>(mockHistoricalData);
+    const [historicalData, setHistoricalData] = useState<IRate[]>([]);
     const [currentRate, setCurrentRate] = useState<IRate>({
         id: -1,
-        value: 0,
+        value: 1,
         baseCurrency: "eur",
         targetCurrency: "usd",
         createdAt: new Date(),
@@ -144,15 +28,39 @@ const MainPage = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [leftRate, setLeftRate] = useState(0);
     const [rightRate, setRightRate] = useState(0);
-    const [defaultRateValue, setDefaultRateValue] = useState<number>(0);
+    const [defaultRateValue, setDefaultRateValue] = useState<number>(1);
 
 
     const getCurrentRate = async () => {
-        mockRates.forEach((rate) => {
-            if (rate.baseCurrency === currentRate?.baseCurrency && rate.targetCurrency === currentRate.targetCurrency) {
-                setCurrentRate(rate);
-            }
-        });
+        try {
+            store.isLoading = true;
+            const params = new URLSearchParams({
+                main: currentRate.baseCurrency,
+                target: currentRate.targetCurrency,
+            });
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/rates/get?${params}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+                },
+                credentials: "include",
+            });
+            const data = await res.json();
+            setCurrentRate({
+                ...currentRate,
+                baseCurrency: data.baseCurrency,
+                targetCurrency: data.targetCurrency,
+                value: data.rate,
+                createdAt: new Date(),
+            });
+            setDefaultRateValue(data.rate);
+        } catch (err: any) {
+            console.error(err);
+        } finally {
+            store.isLoading = false;
+        }
+
     };
 
     const convertCurrency = () => {
@@ -172,9 +80,9 @@ const MainPage = () => {
                 ...currentRate,
                 value: defaultRateValue,
             });
-        }
-        else {
-            setDefaultRateValue(currentRate.value);
+            setLeftRate(0);
+            setRightRate(0);
+            return
         }
         setLeftRate(value);
         setRightRate(0);
@@ -192,9 +100,9 @@ const MainPage = () => {
                 ...currentRate,
                 value: defaultRateValue,
             });
-        }
-        else {
-            setDefaultRateValue(currentRate.value);
+            setLeftRate(0);
+            setRightRate(0);
+            return
         }
         setRightRate(value);
         setLeftRate(0);
@@ -226,7 +134,7 @@ const MainPage = () => {
     const handleReset = () => {
         setCurrentRate({
             id: -1,
-            value: 0,
+            value: 1,
             baseCurrency: "eur",
             targetCurrency: "usd",
             createdAt: new Date(),
@@ -235,6 +143,36 @@ const MainPage = () => {
         setLeftRate(0);
         setRightRate(0);
     };
+
+    const handleSave = async () => {
+        try {
+            store.isLoading = true;
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/rates/add`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+                },
+                body: JSON.stringify({
+                    value: currentRate.value,
+                    baseCurrency: currentRate.baseCurrency,
+                    targetCurrency: currentRate.targetCurrency,
+                    amount: currentRate.amount,
+                    result: currentRate.result,
+                }),
+            });
+            const data = await res.json();
+            if (data.Success === false) {
+                console.error(data.Message);
+                return;
+            }
+            setHistoricalData([...historicalData, currentRate]);
+        } catch (err: any) {
+            console.error(err);
+        } finally {
+            store.isLoading = false;
+        }
+    }
 
 
     return (
@@ -274,7 +212,7 @@ const MainPage = () => {
                                 });
                                 setIsHistorical(false);
                             }
-                        } value={currentRate ? currentRate.value : 0} mainCurrency={
+                        } value={currentRate.value} mainCurrency={
                             currentRate.baseCurrency
                         }
                             customRate={leftRate}
@@ -288,7 +226,7 @@ const MainPage = () => {
                                 });
                                 setIsHistorical(false);
                             }
-                        } value={currentRate ? currentRate.value : 0} targetCurrency={currentRate.targetCurrency}
+                        } value={currentRate.value} targetCurrency={currentRate.targetCurrency}
                             onCustomRateChange={handleRightCustomRate}
                             customRate={rightRate}
                         />
@@ -378,9 +316,8 @@ const MainPage = () => {
                                 textShadow: '2px 0 2px rgba(0, 0, 0, 0.7)',
                                 boxShadow: '1px 2px 40px rgb(0, 14, 63), 0 0 20px rgba(36, 93, 176, 0.5), 0 0 40px rgba(255, 255, 255, 0.6)'
                             }}
-                            onClick={() => {
-                                console.log("Save button clicked");
-                            }}
+                            onClick={handleSave
+                            }
                         >
                             Save
                         </button>

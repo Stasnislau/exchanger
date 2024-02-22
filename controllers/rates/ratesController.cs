@@ -10,21 +10,19 @@ public class RatesController(RatesService ratesService) : ControllerBase
 {
     private readonly RatesService _ratesService = ratesService;
 
-    [HttpGet]
-    public IActionResult Get()
-    {
-        return Ok("please order a currency");
-    }
-
     [HttpGet("get")]
-
+    [Authorize]
     public async Task<IActionResult> GetRate(string main, string target)
     {
         try
         {
             var response = await _ratesService.GetCurrentRate(main, target);
-            return Ok(response);
-
+            return Ok(new {
+                baseCurrency = response.mainCurrency,
+                targetCurrency = response.targetCurrency,
+                rate = response.rate,
+                date = response.date
+            });
         }
         catch (Exception)
         {
