@@ -31,6 +31,31 @@ const MainPage = () => {
     const [defaultRateValue, setDefaultRateValue] = useState<number>(1);
 
 
+    const getHistoricalData = async () => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/rates/history`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+                },
+                credentials: "include",
+            });
+            const data = await res.json() as IRate[];
+            data?.forEach((item) => {
+                item.createdAt = new Date(item.createdAt);
+            });
+            setHistoricalData(data);
+        }
+        catch (err: any) {
+            console.error(err);
+        }
+    }
+
+    useEffect(() => {
+        getHistoricalData();
+    }, []);
+
     const getCurrentRate = async () => {
         try {
             store.isLoading = true;
@@ -172,6 +197,8 @@ const MainPage = () => {
             store.isLoading = false;
         }
     }
+
+    
     return (
         <div className="w-full h-screen flex flex-col">
             <Header isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen} />
@@ -180,7 +207,7 @@ const MainPage = () => {
                     setCurrentRate(historicalData ? historicalData.find((item) => item.id === id) || {} as IRate : {} as IRate);
                     setIsHistorical(true);
                 }} changeHistory={setHistoricalData} />
-                <div className={`justify-center grow items-center 2xl:mx-60 md:mt-4 xl:${isDrawerOpen ? "mx-20" : "mx-40"} md:${isDrawerOpen ? "mx-10" : "mx-5"} sm:mx-10 mx-2 flex flex-col`}>
+                <div className={`justify-center grow items-center 2xl:${isDrawerOpen ? "mx-30" :"mx-60"} md:mt-4 xl:${isDrawerOpen ? "mx-20" : "mx-40"} md:${isDrawerOpen ? "mx-10" : "mx-5"} sm:mx-10 mx-2 flex flex-col`}>
                     <p className={`lg:text-5xl md:text-3xl text-xl text-center ${window.innerHeight < 800 ? "hidden" : ""}`}>Currency Exchange</p>
                     <div className="flex justify-between items-center md:px-4 py-2 px-2 md:mt-8 mt-4 sm:w-4/5 w-[95%] rounded-full bg-[#f5f4de] border-white border-[2px] "
                         style={{
